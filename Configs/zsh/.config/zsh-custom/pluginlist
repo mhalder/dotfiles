@@ -1,0 +1,16 @@
+plugins=(
+  aliases
+  azure
+  dotnet
+  fzf
+  gh
+  git
+  git-escape-magic
+  gpg-agent
+  kubectl
+  ssh-agent
+  uv
+  vault
+  vi-mode
+  zoxide
+)
