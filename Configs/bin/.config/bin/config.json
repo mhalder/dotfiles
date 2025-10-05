@@ -1,0 +1,145 @@
+{
+  "default_path": "/home/halderm/.local/bin",
+  "bins": {
+    "/home/halderm/.local/bin/bin": {
+      "path": "/home/halderm/.local/bin/bin",
+      "remote_name": "bin_0.23.1_linux_amd64",
+      "version": "v0.23.1",
+      "hash": "3da665cb30e129d481ee79b87e01b7674cecdfb230171116ac9855694d094bec",
+      "url": "github.com/marcosnils/bin",
+      "provider": "github",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/btop": {
+      "path": "/home/halderm/.local/bin/btop",
+      "remote_name": "btop",
+      "version": "v1.4.5",
+      "hash": "f9ba9c854987659d83a4e855cbf20cf3fc0193a5caebc6d6670b7bb45b6436c9",
+      "url": "github.com/aristocratos/btop/releases/tag/v1.4.5",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/delta": {
+      "path": "/home/halderm/.local/bin/delta",
+      "remote_name": "delta",
+      "version": "0.18.2",
+      "hash": "fad23fba816fec22fc808717a2b4e149d2651e76491f8dd020b4b82d7829a9da",
+      "url": "github.com/dandavison/delta",
+      "provider": "github",
+      "package_path": "delta-0.18.2-x86_64-unknown-linux-gnu/delta",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/eza": {
+      "path": "/home/halderm/.local/bin/eza",
+      "remote_name": "eza",
+      "version": "v0.23.4",
+      "hash": "ef1f85a17c0e6db8df26480740dcdc92a8a0acb7c25d560a01bfc2c9c7d51021",
+      "url": "github.com/eza-community/eza/releases/tag/v0.23.4",
+      "provider": "",
+      "package_path": "./eza",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/git-who": {
+      "path": "/home/halderm/.local/bin/git-who",
+      "remote_name": "git-who",
+      "version": "v1.2",
+      "hash": "4b48777412903d316f3475c4a5baa3e7535aabb985a8806327659f6dd32f0869",
+      "url": "github.com/sinclairtarget/git-who",
+      "provider": "github",
+      "package_path": "linux_amd64/git-who",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/govc": {
+      "path": "/home/halderm/.local/bin/govc",
+      "remote_name": "govc",
+      "version": "v0.52.0",
+      "hash": "d40a8a2f69f8f698eed8621f9f0934f76c31976f253be74357965d8fa445e332",
+      "url": "github.com/vmware/govmomi",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/k9s": {
+      "path": "/home/halderm/.local/bin/k9s",
+      "remote_name": "k9s",
+      "version": "v0.50.13",
+      "hash": "d5392249e546c50b36d3b3729f734ab1db23264cbf73e2c5ee42198f26b29fb4",
+      "url": "github.com/derailed/k9s/releases/tag/v0.50.13",
+      "provider": "",
+      "package_path": "k9s",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/kind": {
+      "path": "/home/halderm/.local/bin/kind",
+      "remote_name": "kind-linux-amd64",
+      "version": "v0.30.0",
+      "hash": "517ab7fc89ddeed5fa65abf71530d90648d9638ef0c4cde22c2c11f8097b8889",
+      "url": "github.com/kubernetes-sigs/kind/releases/tag/v0.30.0",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/krew": {
+      "path": "/home/halderm/.local/bin/krew",
+      "remote_name": "krew-linux_amd64",
+      "version": "v0.4.5",
+      "hash": "8a0d2a17dfe45614dab919c4b24f6ce089a8c776e3fda2f9434e02f6bde9ff97",
+      "url": "github.com/kubernetes-sigs/krew",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/lazydocker": {
+      "path": "/home/halderm/.local/bin/lazydocker",
+      "remote_name": "lazydocker",
+      "version": "v0.24.1",
+      "hash": "20486dd92005e47f8709b8e5d7ab288e7e597303208189799f52351a554f4daa",
+      "url": "github.com/jesseduffield/lazydocker",
+      "provider": "github",
+      "package_path": "lazydocker",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/lazygit": {
+      "path": "/home/halderm/.local/bin/lazygit",
+      "remote_name": "lazygit",
+      "version": "v0.55.1",
+      "hash": "a2233d66dedfcecf8de689cbd8d7cfbf2f84003401a3d037daa91e529dd6aec4",
+      "url": "github.com/jesseduffield/lazygit/releases/tag/v0.55.1",
+      "provider": "",
+      "package_path": "lazygit",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/talosctl": {
+      "path": "/home/halderm/.local/bin/talosctl",
+      "remote_name": "talosctl-linux-amd64",
+      "version": "v1.11.2",
+      "hash": "d858ae283f2b6e1530b5270d860a80694c4ec0f6299b83a2aaf7795e5a1c8b49",
+      "url": "github.com/siderolabs/talos/releases/tag/v1.11.2",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/terragrunt": {
+      "path": "/home/halderm/.local/bin/terragrunt",
+      "remote_name": "terragrunt_linux_amd64",
+      "version": "v0.88.1",
+      "hash": "acca7801f824648a61b69efe0c740e70201696b41c95ad30a8f4bdb4795db1be",
+      "url": "github.com/gruntwork-io/terragrunt/releases/tag/v0.88.1",
+      "provider": "",
+      "package_path": "",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/tofu": {
+      "path": "/home/halderm/.local/bin/tofu",
+      "remote_name": "tofu",
+      "version": "v1.10.6",
+      "hash": "ce83b735df08fcb903f725a93fd665e183c95e954818efef3db3414ae8c3ae66",
+      "url": "github.com/opentofu/opentofu",
+      "provider": "github",
+      "package_path": "tofu",
+      "pinned": false
+    }
+  }
+}
