@@ -1,0 +1,39 @@
+gui:
+  mouseEvents: true
+  expandFocusedSidePanel: true
+  enlargedSideViewLocation: "top"
+  theme:
+    activeBorderColor:
+      - '#297bff'
+      - bold
+    inactiveBorderColor:
+      - '#b3b3b3'
+    searchingActiveBorderColor:
+      - '#f00000'
+      - bold
+    selectedLineBgColor:
+      - '#297bff'
+      - bold
+    defaultFgColor:
+      - '#b3b3b3'
+      - bold
+  showRandomTip: false
+  showCommandLog: false
+  nerdFontsVersion: "3"
+  showBranchCommitHash: true
+  showDivergenceFromBaseBranch: onlyArrow
+  filterMode: fuzzy
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never --navigate --line-numbers --side-by-side
+  log:
+    showGraph: "always"
+    showWholeGraph: false
+    order: "topo-order"
+  skipHookPrefix: wip
+quitOnTopLevelReturn: true
+notARepository: quit
+keybinding:
+  commits:
+    openLogMenu: <c-x>
