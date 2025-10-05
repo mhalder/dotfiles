@@ -1,0 +1,194 @@
+# i3 config file
+#
+# please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+# font for window titles and status bar
+font pango:Cascadia Code, Regular 12
+
+# set background
+exec_always --no-startup-id feh --bg-scale ~/.background.png
+
+# disable screen blanking and DPMS
+exec_always --no-startup-id xset s off
+exec_always --no-startup-id xset s noblank
+exec_always --no-startup-id xset -dpms
+exec_always --no-startup-id gsettings set org.gnome.desktop.session idle-delay 0
+
+set $mod Mod4
+
+# use mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec ghostty
+
+# no title bar
+for_window [class=".*"] border pixel 3
+
+# kill focused window
+bindsym $mod+Shift+w kill
+
+# start dmenu (a program launcher)
+bindsym $mod+z exec dmenu_run -fn "Ubuntu Mono 14" -i -p "Launch"
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# split in horizontal orientation
+bindsym $mod+g split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen
+
+# change container layout (stacked, tabbed, default)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout default
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+bindsym $mod+d focus child
+
+# workspace definition
+set $ws1 "1 work"
+set $ws2 "2 arkadia"
+set $ws3 "3 private"
+set $ws4 "4 obsidian"
+set $ws5 "5 code"
+set $ws6 "6 tmux"
+set $ws7 "7 remmina"
+set $ws8 "8 slack"
+set $ws9 "9 music"
+set $ws10 "10 notes"
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+bindsym $mod+b exec google-chrome --disable-features=EnterpriseFileObfuscation
+bindsym $mod+shift+p exec pavucontrol
+bindsym $mod+shift+n exec nautilus
+bindsym $mod+shift+y exec synergy
+bindsym $mod+shift+x exec i3lock-fancy
+
+# move container
+bindsym $mod+Shift+Right move workspace to output right
+bindsym $mod+Shift+Left move workspace to output left
+bindsym $mod+Shift+Up move workspace to output up
+bindsym $mod+Shift+Down move workspace to output down
+
+# screen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+
+# pulse audio controls
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10% # increase sound volume
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@  -10% # decrease sound volume
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle # mute sound
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+  # these bindings trigger as soon as you enter the resize mode
+  bindsym h               resize shrink left 10 px or 10 ppt
+  bindsym Shift+h         resize grow   left 10 px or 10 ppt
+
+  bindsym j               resize shrink down 10 px or 10 ppt
+  bindsym Shift+j         resize grow   down 10 px or 10 ppt
+
+  bindsym k               resize shrink up 10 px or 10 ppt
+  bindsym Shift+k         resize grow   up 10 px or 10 ppt
+
+  bindsym l               resize shrink right 10 px or 10 ppt
+  bindsym Shift+l         resize grow   right 10 px or 10 ppt
+
+  # back to normal: enter or escape
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+bar {
+    status_command i3status
+    position top
+    font pango:Cascadia Code, Regular 16
+}
+
+# make the currently focused window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+#
+# show the first scratchpad window
+bindsym $mod+minus scratchpad show
+
+# switch keyboard layout
+bindsym $mod+Shift+i exec --no-startup-id setxkbmap -model pc105 -layout us -variant intl
+bindsym $mod+Shift+u exec --no-startup-id setxkbmap -model pc105 -layout us
+bindsym $mod+Shift+s exec --no-startup-id shutter
+bindsym $mod+Shift+t exec --no-startup-id trackpad
+bindsym $mod+Shift+g exec --no-startup-id /opt/enpass/Enpass showassistant
+
+# configure gaps
+gaps inner 20px
+gaps outer 20px
+
+# dark theme colors
+# class                 border  backgr. text    indicator child_border
+client.focused          #145a32 #285577 #ffffff #145a32   #145a32
+client.focused_inactive #666666 #5f676a #ffffff #484e50   #666666
+client.unfocused        #333333 #222222 #888888 #292d2e   #333333
+client.urgent           #ff0000 #900000 #ffffff #ff0000   #ff0000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.background       #ffffff
+
+# Only enable outer gaps when there is exactly one window or split container on the workspace.
+smart_gaps inverse_outer
+
+exec nm-applet
+exec xfce4-power-manager
+exec indicator-sound-switcher
+exec setxkbmap -model pc105 -layout us

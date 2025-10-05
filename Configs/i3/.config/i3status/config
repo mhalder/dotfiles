@@ -1,0 +1,45 @@
+general {
+  output_format = "i3bar"
+  colors = true
+  interval = 3
+}
+
+order += "cpu_usage"
+order += "load"
+order += "disk /"
+order += "ethernet _first_"
+order += "wireless _first_"
+order += "tztime local"
+order += "battery 0"
+
+cpu_usage {
+  format = "☢ %usage"
+}
+
+load {
+  format = "♻ %5min"
+}
+
+disk "/" {
+  format = "💾 %free free"
+}
+
+ethernet _first_ {
+  format_up = "🛡 %ip"
+  format_down = "🛡 down"
+}
+
+wireless _first_ {
+  format_up = "📡 %ip (%essid, %quality)"
+  format_down = "📡 off"
+}
+
+tztime local {
+  format = "📅 %d.%m.%Y | 🕒 %H:%M"
+}
+
+battery 0 {
+  format = "🔋 %status %percentage %remaining"
+  format_down = "🔋 No battery"
+  path = "/sys/class/power_supply/BAT0/uevent"
+}
