@@ -29,3 +29,10 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 export VIRTUAL_ENV=$HOME/venv
 source $VIRTUAL_ENV/bin/activate
+
+# bun completions
+[ -s "/home/halderm/.bun/_bun" ] && source "/home/halderm/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
