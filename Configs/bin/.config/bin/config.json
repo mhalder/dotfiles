@@ -164,9 +164,9 @@
     "/home/halderm/.local/bin/terragrunt": {
       "path": "/home/halderm/.local/bin/terragrunt",
       "remote_name": "terragrunt_linux_amd64",
-      "version": "v0.89.4",
-      "hash": "12253cbb24c72548f8b4134a1bf6d7e2ad0d2042d56714df9b5e2cfa96f3e19c",
-      "url": "github.com/gruntwork-io/terragrunt/releases/tag/v0.89.4",
+      "version": "v0.90.0",
+      "hash": "d14f3b28b6c7de5ba609ba219fda354797ecc1d7d0201944aa8136d0eb2744c4",
+      "url": "github.com/gruntwork-io/terragrunt/releases/tag/v0.90.0",
       "provider": "",
       "package_path": "",
       "pinned": false
