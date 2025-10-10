@@ -60,3 +60,8 @@ alias tt='tmux attach'
 
 # eza
 alias l="eza --long --sort=modified --reverse --no-user"
+
+# jj
+alias j='jj'
+alias lj='lazyjj'
+alias jst='jj st'

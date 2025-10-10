@@ -36,3 +36,5 @@ source $VIRTUAL_ENV/bin/activate
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+source <(COMPLETE=zsh jj)

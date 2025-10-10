@@ -1,0 +1,9 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+[ui]
+default-command = "log"
+paginate = "never"
+
+[user]
+name = "Martin Halder"
+email = "halderm@arkadia-labs.io"
