@@ -160,6 +160,16 @@
       "provider": "github",
       "package_path": "tofu",
       "pinned": false
+    },
+    "/home/halderm/.local/bin/yamlfmt": {
+      "path": "/home/halderm/.local/bin/yamlfmt",
+      "remote_name": "yamlfmt",
+      "version": "v0.17.2",
+      "hash": "1d9e3c669ea94b38ed522c4b73ee73a61ef2eedcd2cf6b88c0e7123b23ad2e95",
+      "url": "github.com/google/yamlfmt",
+      "provider": "github",
+      "package_path": "yamlfmt",
+      "pinned": false
     }
   }
 }
