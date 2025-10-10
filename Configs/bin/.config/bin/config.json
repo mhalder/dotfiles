@@ -71,6 +71,16 @@
       "package_path": "",
       "pinned": false
     },
+    "/home/halderm/.local/bin/jj": {
+      "path": "/home/halderm/.local/bin/jj",
+      "remote_name": "jj",
+      "version": "v0.34.0",
+      "hash": "e2c9f06b02dba2953f0db7c09877df266a4f427fac14d76c06a49b14fd46f471",
+      "url": "github.com/jj-vcs/jj",
+      "provider": "github",
+      "package_path": "./jj",
+      "pinned": false
+    },
     "/home/halderm/.local/bin/k9s": {
       "path": "/home/halderm/.local/bin/k9s",
       "remote_name": "k9s",
