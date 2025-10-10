@@ -91,6 +91,16 @@
       "package_path": "",
       "pinned": false
     },
+    "/home/halderm/.local/bin/kubectl-neat": {
+      "path": "/home/halderm/.local/bin/kubectl-neat",
+      "remote_name": "kubectl-neat",
+      "version": "v2.0.4",
+      "hash": "8dc3086fa8e7f5390f35a0b257566af478575ae3cc0d5b4614fbebbee5f35352",
+      "url": "github.com/itaysk/kubectl-neat",
+      "provider": "github",
+      "package_path": "kubectl-neat",
+      "pinned": false
+    },
     "/home/halderm/.local/bin/kustomize": {
       "path": "/home/halderm/.local/bin/kustomize",
       "remote_name": "kustomize",
