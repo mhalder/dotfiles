@@ -11,6 +11,16 @@
       "package_path": "",
       "pinned": false
     },
+    "/home/halderm/.local/bin/biome": {
+      "path": "/home/halderm/.local/bin/biome",
+      "remote_name": "biome-linux-x64",
+      "version": "@biomejs/biome@2.2.5",
+      "hash": "55194055a03ec2acd57e9e895809038226e4ccee64213031df25d5fa93fa3350",
+      "url": "github.com/biomejs/biome",
+      "provider": "github",
+      "package_path": "",
+      "pinned": false
+    },
     "/home/halderm/.local/bin/btop": {
       "path": "/home/halderm/.local/bin/btop",
       "remote_name": "btop",
