@@ -190,6 +190,26 @@
       "provider": "github",
       "package_path": "yamlfmt",
       "pinned": false
+    },
+    "/home/halderm/.local/bin/yazi": {
+      "path": "/home/halderm/.local/bin/yazi",
+      "remote_name": "yazi",
+      "version": "v25.5.31",
+      "hash": "ddc761120ccc7e70dc074738d8a5bfc507dffde4cf3da8d2d914d81fcbeda481",
+      "url": "github.com/sxyazi/yazi",
+      "provider": "github",
+      "package_path": "yazi-x86_64-unknown-linux-gnu/yazi",
+      "pinned": false
+    },
+    "/home/halderm/.local/bin/zoxide": {
+      "path": "/home/halderm/.local/bin/zoxide",
+      "remote_name": "zoxide",
+      "version": "v0.9.8",
+      "hash": "a55e651f93824e68058938dfb1dd12e34ace0712553cee35df2fd853726cd49b",
+      "url": "github.com/ajeetdsouza/zoxide",
+      "provider": "github",
+      "package_path": "zoxide",
+      "pinned": false
     }
   }
 }
