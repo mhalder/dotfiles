@@ -4,7 +4,7 @@ Personal configuration files for a complete Linux development environment, provi
 
 ## Overview
 
-This repository contains configuration files and automated installation hooks for various development tools, shell environments, and system utilities. All configurations are managed using [tuckr](https://github.com/RaphGL/tuckr), a symlink-based dotfile manager that keeps your home directory clean and organized.
+This repository contains configuration files and automated installation hooks for various development tools, shell environments, and system utilities. All configurations are managed using [stau](https://github.com/mhalder/stau), a modern dotfile manager written in Rust that combines GNU Stow-style symlink management with powerful setup automation.
 
 ### Key Features
 
@@ -16,16 +16,30 @@ This repository contains configuration files and automated installation hooks fo
 
 ## Requirements
 
-- [tuckr](https://github.com/RaphGL/tuckr) - Dotfile manager
+- [stau](https://github.com/mhalder/stau) - Dotfile manager
+  - Install via: `cargo install stau`
+  - Or build from source: `cargo build --release`
 
 ## Structure
 
 ```
 dotfiles/
-├── Configs/        # Configuration files for various tools
-├── Hooks/          # Installation hooks (pre, post, rm scripts)
+├── <package>/      # Each tool has its own package directory
+│   ├── config files
+│   ├── setup.sh    # Optional installation script (runs after symlinking)
+│   └── teardown.sh # Optional cleanup script (runs during uninstall)
 └── Secrets/        # Sensitive configuration files (gitignored)
 ```
+
+Each package directory contains:
+- Configuration files that will be symlinked to your home directory
+- Optional `setup.sh` script for post-installation tasks (e.g., installing plugins, dependencies)
+- Optional `teardown.sh` script for cleanup when removing the package
+
+Setup scripts receive these environment variables:
+- `STAU_DIR`: Path to the dotfiles directory
+- `STAU_PACKAGE`: Name of the current package
+- `STAU_TARGET`: Target installation directory (default: `$HOME`)
 
 > **Note**: `~/.background.png` is not included in this repository. You'll need to provide your own background image at this location.
 
@@ -73,41 +87,52 @@ dotfiles/
 - **yazi** - Modern terminal file manager with vim-like keybindings
 - **k9s** - Kubernetes CLI tool configuration for cluster management
 
-## Installation Hooks
+## Package Setup Scripts
 
-The `Hooks/` directory contains automated installation scripts that run during configuration deployment. Each hook type serves a specific purpose:
+Several packages include automated setup and teardown scripts for complete installation:
 
-- **`pre.sh`** - Runs before symlinking configuration files (e.g., backing up existing configs)
-- **`post.sh`** - Runs after symlinking to complete setup (e.g., installing plugins, downloading dependencies)
-- **`rm.sh`** - Runs when removing a configuration (e.g., cleaning up installed plugins)
+### Packages with Setup Scripts
 
-### Currently Available Hooks
-
-- **fzf** - Installs fzf binary and shell integrations
+- **fzf** - Clones fzf and fzf-git repositories, runs fzf installer
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
 - **zsh** - Sets up oh-my-zsh, Powerlevel10k theme, and custom plugins
 
-These hooks ensure that when you deploy a configuration, all necessary dependencies are automatically installed and configured, making setup on new machines quick and painless.
+These scripts ensure that when you install a package, all necessary dependencies are automatically installed and configured, making setup on new machines quick and painless.
 
 ## Usage
 
 ```bash
-# Install tuckr (see https://github.com/RaphGL/tuckr)
-cargo install tuckr
+# Install stau
+cargo install stau
 
 # Clone repository
-git clone <repository-url> ~/.config/dotfiles
+git clone <repository-url> ~/dotfiles
 
-# Deploy configurations
-tuckr add <config-name>  # Deploy specific config
-tuckr add zsh tmux git   # Deploy multiple configs
-tuckr add \*             # Deploy all configs
+# Deploy packages
+stau install <package-name>     # Install specific package
+stau install zsh tmux git       # Install multiple packages
+stau install --all              # Install all packages
 
-# Manage configurations
-tuckr list               # List available configs
-tuckr status             # Check deployed configs
-tuckr rm <config-name>   # Remove a config
+# Manage packages
+stau list                       # List available packages
+stau status                     # Check installed packages
+stau uninstall <package-name>   # Remove a package
+
+# Advanced options
+stau install --target ~/custom-dir <package>  # Custom target directory
+STAU_DIR=~/my-dotfiles stau install <package> # Custom dotfiles location
 ```
+
+### Migration from Existing Dotfiles
+
+If you have existing dotfiles in your home directory:
+
+```bash
+# Adopt existing dotfiles into stau management
+stau adopt <package-name>
+```
+
+This will move your existing config files into the package directory and create symlinks.
 
 ## License
 
