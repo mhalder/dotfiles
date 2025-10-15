@@ -1,8 +1,8 @@
+# Build plugin list conditionally based on available tools
 plugins=(
   aliases
   azure
   dotnet
-  fzf
   gh
   git
   git-escape-magic
@@ -12,5 +12,10 @@ plugins=(
   uv
   vault
   vi-mode
-  zoxide
 )
+
+# Add fzf plugin only if FZF_BASE is set
+[ -n "$FZF_BASE" ] && plugins+=(fzf)
+
+# Add zoxide plugin only if zoxide is installed
+command -v zoxide >/dev/null 2>&1 && plugins+=(zoxide)

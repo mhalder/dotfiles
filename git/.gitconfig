@@ -18,16 +18,12 @@
   excludesfile = ~/.gitignore
 [push]
   default = upstream
-[credential]
-  helper = cache --timeout 3600
 [init]
   defaultBranch = main
 [rebase]
   updateRefs = true
 [rerere]
   enabled = true
-[credential]
-  helper = store
 [fetch]
   promisor = false
   partialClone = false
@@ -42,3 +38,5 @@
   prompt = false
 [difftool "nvimdiff"]
   cmd = nvim -d $LOCAL $REMOTE
+[credential]
+  helper = !'/usr/local/bin/devpod' agent git-credentials --port 12049

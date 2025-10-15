@@ -1,40 +1,67 @@
 export LANG=en_US.UTF-8
-export PATH=$HOME/.cargo/bin:$HOME/bin:/usr/local/bin:$PATH
 export ZSH="$HOME/.oh-my-zsh"
 export SHELL=/usr/bin/zsh
 export ZSH_CUSTOM=$HOME/.config/zsh-custom
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
-# neofetch
+# Cargo environment
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# Disable oh-my-zsh theme (using Starship instead)
+ZSH_THEME=""
+
+# FZF configuration (check multiple possible locations)
+if [ -d "$HOME/.fzf" ]; then
+    export FZF_BASE="$HOME/.fzf"
+elif [ -d "/usr/share/fzf" ]; then
+    export FZF_BASE="/usr/share/fzf"
+elif [ -d "/usr/local/opt/fzf" ]; then
+    export FZF_BASE="/usr/local/opt/fzf"
 fi
 
-source ${ZSH_CUSTOM}/pluginlist
-source $ZSH/oh-my-zsh.sh
+# Configure plugin options before loading plugins
+zstyle :omz:plugins:ssh-agent agent-forwarding yes
+zstyle :omz:plugins:ssh-agent lazy yes
+zstyle :omz:plugins:ssh-agent quiet yes
 
-if ! pgrep -x parcellite >/dev/null; then
-    nohup parcellite >/dev/null 2>&1 &
+# Load plugins conditionally
+if [ -f "${ZSH_CUSTOM}/pluginlist" ]; then
+    source ${ZSH_CUSTOM}/pluginlist
+else
+    # Fallback minimal plugin list
+    plugins=(git)
 fi
 
-if [[ -z "$TMUX" ]]; then
-    tmux
+[ -f "$ZSH/oh-my-zsh.sh" ] && source $ZSH/oh-my-zsh.sh
+
+# Start parcellite if available and not running
+if command -v parcellite >/dev/null 2>&1; then
+    if ! pgrep -x parcellite >/dev/null 2>&1; then
+        nohup parcellite >/dev/null 2>&1 &
+    fi
+fi
+
+# Start tmux if available and not already in a session
+if command -v tmux >/dev/null 2>&1; then
+    if [[ -z "$TMUX" ]] && [[ -z "$VSCODE_INJECTION" ]]; then
+        tmux
+    fi
 fi
 
 export GTK_THEME=Adwaita-dark
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-
-export VIRTUAL_ENV=$HOME/venv
-source $VIRTUAL_ENV/bin/activate
-
-# bun completions
-[ -s "/home/halderm/.bun/_bun" ] && source "/home/halderm/.bun/_bun"
-
-# bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-source <(COMPLETE=zsh jj)
+# Virtual environment (only if exists)
+if [ -d "$HOME/venv" ]; then
+    export VIRTUAL_ENV=$HOME/venv
+    source $VIRTUAL_ENV/bin/activate
+fi
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# jj completion (only if jj is installed)
+command -v jj >/dev/null 2>&1 && source <(COMPLETE=zsh jj)

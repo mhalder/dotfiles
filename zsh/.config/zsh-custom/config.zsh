@@ -12,33 +12,19 @@ setopt autolist
 setopt nocheckjobs
 setopt nohup
 
-# use vv instead of esc for vim mode
-bindkey -v
-
 # enable fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-eval "$(fzf --zsh)"
 [ -d ~/.fzf-git ] && source ~/.fzf-git/fzf-git.sh
 
 # githelpers
 [ -f ~/.githelpers ] && source ~/.githelpers
 
-# forgit
-# source <(curl -sSL git.io/forgit)
-
-# kubectl
-source <(kubectl completion zsh)
-
 # zsh plugins
 source ${ZSH_CUSTOM}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # go
-export PATH=$PATH:/usr/local/go/bin:$HOME/.local/bin
 export GOPATH=$HOME/go
-
-# zoxide
-eval "$(zoxide init zsh)"
-alias cd=z
+export PATH=$PATH:/usr/local/go/bin
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -46,28 +32,28 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # cargo
-source "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
-# julia
-path=('/home/halderm/.juliaup/bin' $path)
-export PATH
+# uv (only if uv is installed)
+command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
 
-# console-ninja
-PATH=~/.console-ninja/.bin:$PATH
-
-# uv
-eval "$(uv generate-shell-completion zsh)"
-
-# prevent terminal go black and picom
-xset s off
-xset s noblank
-xset -dpms
-gsettings set org.gnome.desktop.session idle-delay 0
-pgrep picom >/dev/null || picom -b
+# X11/GUI specific commands (only in graphical sessions)
+if [ -n "$DISPLAY" ]; then
+  # prevent terminal go black and picom
+  command -v xset >/dev/null 2>&1 && xset s off
+  command -v xset >/dev/null 2>&1 && xset s noblank
+  command -v xset >/dev/null 2>&1 && xset -dpms
+  command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.session idle-delay 0 2>/dev/null
+  command -v picom >/dev/null 2>&1 && (pgrep picom >/dev/null || picom -b)
+fi
 
 # nvim helpers
 alias nvim-claude="NVIM_APPNAME=nvim-claude nvim"
 function nvims() {
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is not installed"
+    return 1
+  fi
   items=("default" "nvim-claude" "clean")
   config=$(printf "%s\n" "${items[@]}" | fzf --prompt="Neovim Config " --height=~50% --layout=reverse --border --exit-0)
   if [[ -z $config ]]; then
@@ -94,6 +80,10 @@ function nvims() {
 
 # yazi helpers
 function y() {
+  if ! command -v yazi >/dev/null 2>&1; then
+    echo "yazi is not installed"
+    return 1
+  fi
   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
   yazi "$@" --cwd-file="$tmp"
   if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
@@ -101,3 +91,6 @@ function y() {
   fi
   rm -f -- "$tmp"
 }
+
+# Initialize Starship prompt (only if starship is installed)
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
