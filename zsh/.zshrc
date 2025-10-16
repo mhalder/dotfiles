@@ -5,6 +5,12 @@ export ZSH_CUSTOM=$HOME/.config/zsh-custom
 
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
+# History settings - prevent sensitive commands from being saved
+setopt HIST_IGNORE_SPACE      # Don't save commands starting with a space
+setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicate commands
+setopt HIST_SAVE_NO_DUPS      # Don't write duplicate entries
+setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
+
 # Cargo environment
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
