@@ -6,10 +6,10 @@ export ZSH_CUSTOM=$HOME/.config/zsh-custom
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
 # History settings - prevent sensitive commands from being saved
-setopt HIST_IGNORE_SPACE      # Don't save commands starting with a space
-setopt HIST_IGNORE_ALL_DUPS   # Remove older duplicate commands
-setopt HIST_SAVE_NO_DUPS      # Don't write duplicate entries
-setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks
+setopt HIST_IGNORE_SPACE    # Don't save commands starting with a space
+setopt HIST_IGNORE_ALL_DUPS # Remove older duplicate commands
+setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries
+setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks
 
 # Cargo environment
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
@@ -71,3 +71,7 @@ fi
 
 # jj completion (only if jj is installed)
 command -v jj >/dev/null 2>&1 && source <(COMPLETE=zsh jj)
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
