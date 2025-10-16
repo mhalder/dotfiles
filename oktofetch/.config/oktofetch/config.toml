@@ -1,0 +1,102 @@
+[settings]
+install_dir = "/home/ubuntu/.local/bin"
+
+[[tools]]
+name = "biome"
+repo = "biomejs/biome"
+version = "@biomejs/biome@2.2.6"
+
+[[tools]]
+name = "btop"
+repo = "aristocratos/btop"
+version = "v1.4.5"
+
+[[tools]]
+name = "delta"
+repo = "dandavison/delta"
+version = "0.18.2"
+
+[[tools]]
+name = "eza"
+repo = "eza-community/eza"
+version = "v0.23.4"
+
+[[tools]]
+name = "git-who"
+repo = "sinclairtarget/git-who"
+version = "v1.2"
+
+[[tools]]
+name = "govc"
+repo = "vmware/govmomi"
+version = "v0.52.0"
+
+[[tools]]
+name = "jj"
+repo = "jj-vcs/jj"
+version = "v0.34.0"
+
+[[tools]]
+name = "k9s"
+repo = "derailed/k9s"
+version = "v0.50.15"
+
+[[tools]]
+name = "kind"
+repo = "kubernetes-sigs/kind"
+version = "v0.30.0"
+
+[[tools]]
+name = "krew"
+repo = "kubernetes-sigs/krew"
+version = "v0.4.5"
+
+[[tools]]
+name = "kubectl-neat"
+repo = "itaysk/kubectl-neat"
+version = "v2.0.4"
+
+[[tools]]
+name = "kustomize"
+repo = "kubernetes-sigs/kustomize"
+version = "kustomize/v5.7.1"
+
+[[tools]]
+name = "lazydocker"
+repo = "jesseduffield/lazydocker"
+version = "v0.24.1"
+
+[[tools]]
+name = "lazygit"
+repo = "jesseduffield/lazygit"
+version = "v0.55.1"
+
+[[tools]]
+name = "talosctl"
+repo = "siderolabs/talos"
+version = "v1.11.3"
+
+[[tools]]
+name = "terragrunt"
+repo = "gruntwork-io/terragrunt"
+version = "v0.91.0"
+
+[[tools]]
+name = "tofu"
+repo = "opentofu/opentofu"
+version = "v1.10.6"
+
+[[tools]]
+name = "yamlfmt"
+repo = "google/yamlfmt"
+version = "v0.18.0"
+
+[[tools]]
+name = "yazi"
+repo = "sxyazi/yazi"
+version = "v25.5.31"
+
+[[tools]]
+name = "zoxide"
+repo = "ajeetdsouza/zoxide"
+version = "v0.9.8"
