@@ -9,3 +9,8 @@ stau install oktofetch --force
 stau install tmux --force
 stau install yazi --force
 stau install zsh --force
+oktofetch update
+# install tmux plugins
+# install claude
+# nvm
+git clone https://github.com/mhalder/nvim.git ~/.config/nvim
