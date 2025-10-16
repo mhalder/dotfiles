@@ -100,3 +100,9 @@ version = "v25.5.31"
 name = "zoxide"
 repo = "ajeetdsouza/zoxide"
 version = "v0.9.8"
+
+[[tools]]
+name = "neovim"
+repo = "neovim/neovim"
+binary_name = "nvim"
+version = "v0.11.4"
