@@ -97,6 +97,11 @@ repo = "sxyazi/yazi"
 version = "v25.5.31"
 
 [[tools]]
+name = "ya"
+repo = "sxyazi/yazi"
+version = "v25.5.31"
+
+[[tools]]
 name = "zoxide"
 repo = "ajeetdsouza/zoxide"
 version = "v0.9.8"
