@@ -1,5 +1,5 @@
 [settings]
-install_dir = "/home/ubuntu/.local/bin"
+install_dir = "$HOME/.local/bin"
 
 [[tools]]
 name = "biome"
@@ -79,7 +79,7 @@ version = "v1.11.3"
 [[tools]]
 name = "terragrunt"
 repo = "gruntwork-io/terragrunt"
-version = "v0.91.0"
+version = "v0.91.1"
 
 [[tools]]
 name = "tofu"
@@ -89,7 +89,7 @@ version = "v1.10.6"
 [[tools]]
 name = "yamlfmt"
 repo = "google/yamlfmt"
-version = "v0.18.0"
+version = "v0.19.0"
 
 [[tools]]
 name = "yazi"

@@ -1,4 +1,4 @@
-export STAU_DIR=/home/ubuntu/workspace/dotfiles
+export STAU_DIR=$HOME/workspace/dotfiles
 
 stau install btop --force
 stau install fzf --force
