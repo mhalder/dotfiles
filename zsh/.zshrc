@@ -26,9 +26,10 @@ elif [ -d "/usr/local/opt/fzf" ]; then
     export FZF_BASE="/usr/local/opt/fzf"
 fi
 
-# Configure plugin options before loading plugins
+# SSH agent configuration
 zstyle :omz:plugins:ssh-agent agent-forwarding yes
-zstyle :omz:plugins:ssh-agent lazy yes
+zstyle :omz:plugins:ssh-agent identities id_rsa
+zstyle :omz:plugins:ssh-agent lifetime 12h
 zstyle :omz:plugins:ssh-agent quiet yes
 
 # Load plugins conditionally

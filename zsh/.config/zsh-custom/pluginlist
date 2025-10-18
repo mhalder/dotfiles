@@ -6,7 +6,6 @@ plugins=(
   gh
   git
   git-escape-magic
-  gpg-agent
   kubectl
   ssh-agent
   uv
