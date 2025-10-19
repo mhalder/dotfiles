@@ -29,4 +29,12 @@ else
   fi
 fi
 
+log "Installing tmux plugins via TPM..."
+if [ -f "$TPM_DIR/bin/install_plugins" ]; then
+  "$TPM_DIR/bin/install_plugins"
+  log "TPM plugins installed successfully"
+else
+  log "Warning: TPM install_plugins script not found"
+fi
+
 log "Tmux setup completed successfully!"
