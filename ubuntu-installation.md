@@ -263,6 +263,14 @@ sudo usermod -aG docker $USER
 
 **Note:** Log out and back in for docker group membership to take effect.
 
+#### Kubectl
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+
 #### DevPod CLI
 
 ```bash
