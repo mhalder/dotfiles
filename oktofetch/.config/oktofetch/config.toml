@@ -39,7 +39,7 @@ version = "v0.34.0"
 [[tools]]
 name = "k9s"
 repo = "derailed/k9s"
-version = "v0.50.15"
+version = "v0.50.16"
 
 [[tools]]
 name = "kind"
@@ -79,7 +79,7 @@ version = "v1.11.3"
 [[tools]]
 name = "terragrunt"
 repo = "gruntwork-io/terragrunt"
-version = "v0.91.1"
+version = "v0.91.2"
 
 [[tools]]
 name = "tofu"
