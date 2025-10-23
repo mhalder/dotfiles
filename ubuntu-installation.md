@@ -159,7 +159,7 @@ nvm install --lts
 #### Neovim (from source)
 
 ```bash
-sudo apt install -y cmake gettext ninja-build
+sudo apt install -y cmake gettext
 git clone https://github.com/neovim/neovim.git ~/tools/neovim
 cd ~/tools/neovim
 make CMAKE_BUILD_TYPE=Release

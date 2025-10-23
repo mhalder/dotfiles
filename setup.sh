@@ -239,6 +239,17 @@ else
     log_info "Skipping uv installation"
 fi
 
+# 13. Install CMake and build tools (Optional)
+read -p "Do you want to install cmake and gettext for building from source? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    log_info "Installing cmake and gettext..."
+    sudo apt install -y cmake gettext
+    log_success "cmake and gettext installed"
+else
+    log_info "Skipping cmake and gettext installation"
+fi
+
 # Verify installation
 log_info "Verifying installation..."
 echo ""
