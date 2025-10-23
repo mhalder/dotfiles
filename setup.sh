@@ -184,7 +184,29 @@ else
     log_info "Skipping zsh as default shell"
 fi
 
-# 10. Install Google Chrome (Optional)
+# 10. Install Cascadia Code Fonts (Optional)
+read -p "Do you want to install Cascadia Code fonts? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ ! -d "$HOME/.local/share/fonts/cascadia-code" ]]; then
+        log_info "Installing Cascadia Code fonts..."
+        FONT_VERSION="2407.24"
+        CASCADIA_ZIP="/tmp/CascadiaCode-${FONT_VERSION}.zip"
+        wget -O "$CASCADIA_ZIP" "https://github.com/microsoft/cascadia-code/releases/download/v${FONT_VERSION}/CascadiaCode-${FONT_VERSION}.zip"
+        unzip "$CASCADIA_ZIP" -d /tmp/cascadia
+        mkdir -p "$HOME/.local/share/fonts/cascadia-code"
+        cp /tmp/cascadia/ttf/*.ttf "$HOME/.local/share/fonts/cascadia-code/"
+        fc-cache -f -v
+        rm -rf /tmp/cascadia "$CASCADIA_ZIP"
+        log_success "Cascadia Code fonts installed"
+    else
+        log_info "Cascadia Code fonts already installed"
+    fi
+else
+    log_info "Skipping Cascadia Code fonts installation"
+fi
+
+# 11. Install Google Chrome (Optional)
 read -p "Do you want to install Google Chrome? (y/N) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
