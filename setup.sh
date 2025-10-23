@@ -184,6 +184,24 @@ else
     log_info "Skipping zsh as default shell"
 fi
 
+# 10. Install Google Chrome (Optional)
+read -p "Do you want to install Google Chrome? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if ! command -v google-chrome &>/dev/null; then
+        log_info "Installing Google Chrome..."
+        CHROME_DEB="/tmp/google-chrome-stable_current_amd64.deb"
+        wget -O "$CHROME_DEB" https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y "$CHROME_DEB"
+        rm "$CHROME_DEB"
+        log_success "Google Chrome installed"
+    else
+        log_info "Google Chrome already installed"
+    fi
+else
+    log_info "Skipping Google Chrome installation"
+fi
+
 # Verify installation
 log_info "Verifying installation..."
 echo ""
