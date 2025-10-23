@@ -55,8 +55,43 @@ fi
 # 1. Install Base Dependencies
 log_info "Installing base dependencies..."
 sudo apt update
-sudo apt install -y git curl build-essential pkg-config libssl-dev tmux xclip
+sudo apt install -y \
+    ack-grep \
+    build-essential \
+    curl \
+    fd-find \
+    git \
+    golang-go \
+    imagemagick \
+    iputils-ping \
+    liblldb-18 \
+    libssl-dev \
+    lldb-18 \
+    locales \
+    luarocks \
+    ncurses-bin \
+    pkg-config \
+    python3 \
+    python3-dev \
+    python3-lldb-18 \
+    python3-pip \
+    python3-pynvim \
+    python3-venv \
+    ripgrep \
+    tmux \
+    unzip \
+    vim \
+    wget \
+    xclip
 log_success "Base dependencies installed"
+
+# Configure locale
+log_info "Configuring locale..."
+sudo locale-gen en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en
+export LC_ALL=en_US.UTF-8
+log_success "Locale configured"
 
 # 2. Install Window Manager (i3) and utilities
 log_info "Installing i3 window manager and utilities..."
@@ -88,6 +123,15 @@ log_info "Adding Rust components..."
 rustup component add rust-analyzer clippy rustfmt
 log_success "Rust components added"
 
+# Install cargo-binstall for faster binary installations
+if ! command -v cargo-binstall &>/dev/null; then
+    log_info "Installing cargo-binstall..."
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    log_success "cargo-binstall installed"
+else
+    log_info "cargo-binstall already installed"
+fi
+
 # 5. Install Dotfiles Management Tools
 log_info "Installing dotfiles management tools..."
 
@@ -113,6 +157,26 @@ if ! command -v starship &>/dev/null; then
     log_success "starship installed"
 else
     log_info "starship already installed"
+fi
+
+# Install tmux-sessionizer
+if ! command -v tmux-sessionizer &>/dev/null; then
+    log_info "Installing tmux-sessionizer..."
+    if command -v cargo-binstall &>/dev/null; then
+        cargo binstall -y tmux-sessionizer
+    else
+        cargo install tmux-sessionizer
+    fi
+    log_success "tmux-sessionizer installed"
+
+    # Create projects directory for tmux-sessionizer
+    if [[ ! -d "$HOME/projects/active" ]]; then
+        log_info "Creating ~/projects/active directory..."
+        mkdir -p "$HOME/projects/active"
+        log_success "Projects directory created"
+    fi
+else
+    log_info "tmux-sessionizer already installed"
 fi
 
 # 6. Install Dotfiles Packages
@@ -269,11 +333,87 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         log_info "Installing latest Node.js..."
         nvm install node
         log_success "Node.js installed"
+
+        # Install npm global packages
+        log_info "Installing npm global packages..."
+        npm install -g @anthropic-ai/claude-code opencode-ai
+        log_success "npm global packages installed"
     else
         log_info "nvm already installed at $NVM_DIR"
     fi
 else
     log_info "Skipping nvm and Node.js installation"
+fi
+
+# 15. Install Neovim (Optional)
+read -p "Do you want to install Neovim (prebuilt binary)? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if ! command -v nvim &>/dev/null; then
+        log_info "Installing Neovim..."
+        mkdir -p "$HOME/.local/bin"
+        NVIM_VERSION="v0.11.4"
+        NVIM_TGZ="/tmp/nvim-linux-x86_64.tar.gz"
+        curl -LO "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" -o "$NVIM_TGZ"
+        tar xzf "$NVIM_TGZ" -C /tmp
+        cp -r /tmp/nvim-linux-x86_64/* "$HOME/.local/"
+        rm -rf /tmp/nvim-linux-x86_64 "$NVIM_TGZ"
+        log_success "Neovim installed"
+    else
+        log_info "Neovim already installed"
+    fi
+else
+    log_info "Skipping Neovim installation"
+fi
+
+# 16. Setup Python virtualenv for Neovim (Optional)
+read -p "Do you want to setup Python virtualenv for Neovim? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ ! -d "$HOME/venv" ]]; then
+        log_info "Setting up Python virtualenv for Neovim..."
+        python3 -m venv "$HOME/venv"
+        "$HOME/venv/bin/pip" install --upgrade pip
+        "$HOME/venv/bin/pip" install pynvim
+        log_success "Python virtualenv for Neovim created"
+    else
+        log_info "Python virtualenv already exists at ~/venv"
+    fi
+else
+    log_info "Skipping Python virtualenv setup"
+fi
+
+# 17. Install kubectl (Optional)
+read -p "Do you want to install kubectl? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if ! command -v kubectl &>/dev/null; then
+        log_info "Installing kubectl..."
+        mkdir -p "$HOME/.local/bin"
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        mv kubectl "$HOME/.local/bin/"
+        log_success "kubectl installed"
+    else
+        log_info "kubectl already installed"
+    fi
+else
+    log_info "Skipping kubectl installation"
+fi
+
+# 18. Clone Neovim configuration (Optional)
+read -p "Do you want to clone your Neovim configuration? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [[ ! -d "$HOME/.config/nvim" ]]; then
+        log_info "Cloning Neovim configuration..."
+        git clone https://github.com/mhalder/nvim.git "$HOME/.config/nvim"
+        log_success "Neovim configuration cloned"
+    else
+        log_info "Neovim configuration already exists at ~/.config/nvim"
+    fi
+else
+    log_info "Skipping Neovim configuration clone"
 fi
 
 # Verify installation
