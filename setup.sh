@@ -45,7 +45,7 @@ read -p "Do you want to enable passwordless sudo? (y/N) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     log_info "Configuring passwordless sudo..."
-    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER > /dev/null
+    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER >/dev/null
     sudo chmod 0440 /etc/sudoers.d/$USER
     log_success "Passwordless sudo configured"
 else
@@ -257,7 +257,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     export NVM_DIR="$HOME/.config/nvm"
     if [[ ! -d "$NVM_DIR" ]]; then
         log_info "Installing nvm to $NVM_DIR..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/latest/install.sh | bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
         # Source nvm to use it immediately
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
