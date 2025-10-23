@@ -35,9 +35,9 @@ command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
 # X11/GUI specific commands (only in graphical sessions)
 if [ -n "$DISPLAY" ]; then
   # prevent terminal go black and picom
-  command -v xset >/dev/null 2>&1 && xset s off
-  command -v xset >/dev/null 2>&1 && xset s noblank
-  command -v xset >/dev/null 2>&1 && xset -dpms
+  command -v xset >/dev/null 2>&1 && xset s off 2>/dev/null
+  command -v xset >/dev/null 2>&1 && xset s noblank 2>/dev/null
+  command -v xset >/dev/null 2>&1 && xset -dpms 2>/dev/null
   command -v gsettings >/dev/null 2>&1 && gsettings set org.gnome.desktop.session idle-delay 0 2>/dev/null
   command -v picom >/dev/null 2>&1 && (pgrep picom >/dev/null || picom -b)
 fi
