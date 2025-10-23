@@ -224,6 +224,21 @@ else
     log_info "Skipping Google Chrome installation"
 fi
 
+# 12. Install uv (Fast Python package manager) (Optional)
+read -p "Do you want to install uv (Fast Python package manager)? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if ! command -v uv &>/dev/null; then
+        log_info "Installing uv..."
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        log_success "uv installed"
+    else
+        log_info "uv already installed"
+    fi
+else
+    log_info "Skipping uv installation"
+fi
+
 # Verify installation
 log_info "Verifying installation..."
 echo ""
