@@ -250,6 +250,32 @@ else
     log_info "Skipping cmake and gettext installation"
 fi
 
+# 14. Install nvm and Node.js (Optional)
+read -p "Do you want to install nvm and Node.js? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    export NVM_DIR="$HOME/.config/nvm"
+    if [[ ! -d "$NVM_DIR" ]]; then
+        log_info "Installing nvm to $NVM_DIR..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/latest/install.sh | bash
+
+        # Source nvm to use it immediately
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+        log_success "nvm installed"
+
+        log_info "Installing Node.js LTS..."
+        nvm install --lts
+        log_info "Installing latest Node.js..."
+        nvm install node
+        log_success "Node.js installed"
+    else
+        log_info "nvm already installed at $NVM_DIR"
+    fi
+else
+    log_info "Skipping nvm and Node.js installation"
+fi
+
 # Verify installation
 log_info "Verifying installation..."
 echo ""
