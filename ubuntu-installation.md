@@ -27,16 +27,31 @@ If you prefer step-by-step installation or need to customize the setup:
 
 #### Configure Sudo (Optional)
 
+**Note:** The setup.sh script will prompt you to enable this.
+
 ```bash
 # For passwordless sudo
 echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
+sudo chmod 0440 /etc/sudoers.d/$USER
 ```
 
 #### Install Base Dependencies
 
 ```bash
 sudo apt update
-sudo apt install -y git curl build-essential pkg-config libssl-dev
+sudo apt install -y git curl build-essential pkg-config libssl-dev tmux xclip
+```
+
+#### Install Window Manager (i3) and utilities
+
+```bash
+sudo apt install -y i3 i3status i3lock dunst pavucontrol arandr feh picom
+```
+
+#### Install Terminal Emulator (Ghostty)
+
+```bash
+sudo snap install ghostty --classic
 ```
 
 ### 2. Install Rust and Cargo
@@ -130,21 +145,6 @@ sudo chsh -s $(which zsh) $USER
 
 ### 8. Optional Components
 
-#### Window Manager (i3)
-
-```bash
-sudo apt install -y i3 i3status i3lock dunst pavucontrol arandr
-```
-
-#### Terminal Emulator
-
-```bash
-# Ghostty (via snap)
-sudo snap install ghostty --classic
-
-# Or install Alacritty, WezTerm, etc.
-```
-
 #### Node.js Environment
 
 ```bash
@@ -193,7 +193,7 @@ sudo apt install -y golang-go python3-pip python3-venv python3-dev
 sudo apt install -y luarocks
 
 # Additional utilities
-sudo apt install -y tmux flameshot ack-grep
+sudo apt install -y flameshot ack-grep
 ```
 
 #### Rust Development
@@ -205,6 +205,9 @@ curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-
 # Tmux session manager
 cargo install tmux-sessionizer
 mkdir -p ~/projects/active
+
+# lazyjj - TUI for jujutsu
+cargo install lazyjj
 ```
 
 #### Python Tools
@@ -217,8 +220,8 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 #### Desktop Environment Enhancements
 
 ```bash
-# Compositor and clipboard manager
-sudo apt install -y picom parcellite
+# Clipboard manager
+sudo apt install -y parcellite
 ```
 
 #### Fonts
@@ -269,6 +272,15 @@ sudo usermod -aG docker $USER
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
+```
+
+#### Kubernetes Helpers
+
+```bash
+# kubectx and kubens - Kubernetes context and namespace switchers
+sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
+sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
+sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
 ```
 
 #### DevPod CLI
