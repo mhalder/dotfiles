@@ -2,6 +2,22 @@
 
 set -e
 
+# Configuration via environment variables (set to "false" to skip)
+: "${ENABLE_PASSWORDLESS_SUDO:=true}"
+: "${INSTALL_XORG_DESKTOP:=true}"
+: "${INSTALL_I3:=true}"
+: "${INSTALL_GHOSTTY:=true}"
+: "${SET_ZSH_DEFAULT:=true}"
+: "${INSTALL_CASCADIA_FONTS:=true}"
+: "${INSTALL_CHROME:=true}"
+: "${INSTALL_UV:=true}"
+: "${INSTALL_CMAKE:=true}"
+: "${INSTALL_NVM:=true}"
+: "${INSTALL_NEOVIM:=true}"
+: "${SETUP_PYTHON_VENV:=true}"
+: "${INSTALL_KUBECTL:=true}"
+: "${CLONE_NVIM_CONFIG:=true}"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -32,24 +48,23 @@ if [[ "$OSTYPE" != "linux-gnu"* ]]; then
     exit 1
 fi
 
-# Check if we have sudo privileges
-if ! sudo -v; then
-    log_error "This script requires sudo privileges."
-    exit 1
-fi
-
 log_info "Starting dotfiles installation..."
 
-# 0. Configure Passwordless Sudo (Optional)
-read -p "Do you want to enable passwordless sudo? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    log_info "Configuring passwordless sudo..."
-    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER >/dev/null
-    sudo chmod 0440 /etc/sudoers.d/$USER
-    log_success "Passwordless sudo configured"
+# 0. Configure Passwordless Sudo
+if ! sudo -n true 2>/dev/null; then
+    if [[ "$ENABLE_PASSWORDLESS_SUDO" == "true" ]]; then
+        log_info "Configuring passwordless sudo (will require your password once)..."
+        echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER >/dev/null
+        sudo chmod 0440 /etc/sudoers.d/$USER
+        log_success "Passwordless sudo configured"
+    else
+        log_error "This script requires passwordless sudo privileges."
+        log_error "Either run with ENABLE_PASSWORDLESS_SUDO=true, or manually run:"
+        log_error "  echo \"\$USER ALL=(ALL) NOPASSWD:ALL\" | sudo tee /etc/sudoers.d/\$USER"
+        exit 1
+    fi
 else
-    log_info "Skipping passwordless sudo configuration"
+    log_info "Passwordless sudo already configured"
 fi
 
 # 1. Install Base Dependencies
@@ -75,7 +90,6 @@ sudo apt install -y \
     python3-dev \
     python3-lldb-18 \
     python3-pip \
-    python3-pynvim \
     python3-venv \
     ripgrep \
     tmux \
@@ -85,6 +99,15 @@ sudo apt install -y \
     xclip
 log_success "Base dependencies installed"
 
+# Clone dotfiles repository if not present
+if [[ ! -d "$HOME/dotfiles" ]]; then
+    log_info "Cloning dotfiles repository..."
+    git clone https://github.com/mhalder/dotfiles.git "$HOME/dotfiles"
+    log_success "Dotfiles repository cloned"
+else
+    log_info "Dotfiles repository already exists"
+fi
+
 # Configure locale
 log_info "Configuring locale..."
 sudo locale-gen en_US.UTF-8
@@ -93,21 +116,85 @@ export LANGUAGE=en_US:en
 export LC_ALL=en_US.UTF-8
 log_success "Locale configured"
 
-# 2. Install Window Manager (i3) and utilities
-log_info "Installing i3 window manager and utilities..."
-sudo apt install -y i3 i3status i3lock dunst pavucontrol arandr feh picom
-log_success "i3 and utilities installed"
+# 2. Install Xorg and Display Manager
+if [[ "$INSTALL_XORG_DESKTOP" == "true" ]]; then
+    log_info "Installing Xorg and LightDM display manager..."
+    sudo apt install -y \
+        xorg \
+        lightdm \
+        lightdm-gtk-greeter \
+        lightdm-gtk-greeter-settings \
+        x11-xserver-utils \
+        adwaita-icon-theme \
+        xcursor-themes
 
-# 3. Install Terminal Emulator (Ghostty)
-log_info "Installing Ghostty terminal emulator..."
-if command -v snap &>/dev/null; then
+    # Enable LightDM service
+    log_info "Enabling LightDM service..."
+    sudo systemctl enable lightdm
+    log_success "Xorg and LightDM installed and enabled"
+    log_warn "LightDM will start on next reboot, or run 'sudo systemctl start lightdm' to start now"
+else
+    log_info "Skipping Xorg and display manager installation"
+fi
+
+# 3. Install Window Manager (i3) and utilities
+if [[ "$INSTALL_I3" == "true" ]]; then
+    log_info "Installing i3 window manager and utilities..."
+    sudo apt install -y i3 i3status i3lock dunst pavucontrol arandr feh picom
+    log_success "i3 and utilities installed"
+
+    # Configure LightDM to use i3 as default session
+    if [[ "$INSTALL_XORG_DESKTOP" == "true" ]]; then
+        log_info "Configuring i3 as default session for LightDM..."
+
+        # Set i3 as the default session in LightDM configuration
+        if [[ ! -f /etc/lightdm/lightdm.conf.d/50-i3.conf ]]; then
+            sudo mkdir -p /etc/lightdm/lightdm.conf.d
+            echo "[Seat:*]" | sudo tee /etc/lightdm/lightdm.conf.d/50-i3.conf >/dev/null
+            echo "user-session=i3" | sudo tee -a /etc/lightdm/lightdm.conf.d/50-i3.conf >/dev/null
+            log_success "i3 set as default LightDM session"
+        else
+            log_info "LightDM i3 configuration already exists"
+        fi
+
+        # Also set i3 as default for current user via AccountsService
+        if [[ -d /var/lib/AccountsService/users ]]; then
+            log_info "Setting i3 as default session for user $USER..."
+            sudo mkdir -p /var/lib/AccountsService/users
+            if [[ ! -f /var/lib/AccountsService/users/$USER ]]; then
+                echo "[User]" | sudo tee /var/lib/AccountsService/users/$USER >/dev/null
+                echo "XSession=i3" | sudo tee -a /var/lib/AccountsService/users/$USER >/dev/null
+            else
+                # Update existing file if XSession not set
+                if ! sudo grep -q "XSession=i3" /var/lib/AccountsService/users/$USER; then
+                    echo "XSession=i3" | sudo tee -a /var/lib/AccountsService/users/$USER >/dev/null
+                fi
+            fi
+            log_success "User session configured for i3"
+        fi
+    fi
+else
+    log_info "Skipping i3 window manager installation"
+fi
+
+# 4. Install Terminal Emulator (Ghostty)
+if [[ "$INSTALL_GHOSTTY" == "true" ]]; then
+    log_info "Installing Ghostty terminal emulator..."
+
+    # Install snapd if not present
+    if ! command -v snap &>/dev/null; then
+        log_info "Installing snapd..."
+        sudo apt install -y snapd
+        log_success "snapd installed"
+    fi
+
     sudo snap install ghostty --classic
     log_success "Ghostty installed"
 else
-    log_warn "snap not available, skipping Ghostty installation"
+    log_info "Skipping Ghostty installation"
 fi
 
-# 4. Install Rust and Cargo
+# 5. Install Rust and Cargo
 if ! command -v cargo &>/dev/null; then
     log_info "Installing Rust and Cargo..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -126,13 +213,13 @@ log_success "Rust components added"
 # Install cargo-binstall for faster binary installations
 if ! command -v cargo-binstall &>/dev/null; then
     log_info "Installing cargo-binstall..."
-    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    cargo install cargo-binstall
     log_success "cargo-binstall installed"
 else
     log_info "cargo-binstall already installed"
 fi
 
-# 5. Install Dotfiles Management Tools
+# 6. Install Dotfiles Management Tools
 log_info "Installing dotfiles management tools..."
 
 if ! command -v stau &>/dev/null; then
@@ -161,12 +248,8 @@ fi
 
 # Install tmux-sessionizer
 if ! command -v tmux-sessionizer &>/dev/null; then
-    log_info "Installing tmux-sessionizer..."
-    if command -v cargo-binstall &>/dev/null; then
-        cargo binstall -y tmux-sessionizer
-    else
-        cargo install tmux-sessionizer
-    fi
+    log_info "Installing tmux-sessionizer (compiling from source)..."
+    cargo install tmux-sessionizer
     log_success "tmux-sessionizer installed"
 
     # Create projects directory for tmux-sessionizer
@@ -179,7 +262,7 @@ else
     log_info "tmux-sessionizer already installed"
 fi
 
-# 6. Install Dotfiles Packages
+# 7. Install Dotfiles Packages
 log_info "Installing dotfiles packages..."
 PACKAGES=(atuin bash btop dunst fzf gh git i3 jj k9s lazy oktofetch starship terminal tmux yazi zsh)
 
@@ -192,7 +275,7 @@ for pkg in "${PACKAGES[@]}"; do
     fi
 done
 
-# 7. Run Package Setup Scripts
+# 8. Run Package Setup Scripts
 log_info "Running package setup scripts..."
 
 # FZF setup
@@ -216,7 +299,7 @@ if [[ -f "$HOME/dotfiles/zsh/setup.sh" ]]; then
     log_success "zsh setup complete"
 fi
 
-# 8. Install Binary Tools
+# 9. Install Binary Tools
 log_info "Installing binary tools via oktofetch..."
 if oktofetch update; then
     log_success "Binary tools installed to ~/.local/bin/"
@@ -224,7 +307,7 @@ else
     log_warn "oktofetch update failed or partially completed"
 fi
 
-# 9. Shell Configuration
+# 10. Shell Configuration
 log_info "Setting up shell configuration..."
 
 # Install Zsh if not already installed
@@ -236,10 +319,8 @@ else
     log_info "zsh already installed"
 fi
 
-# Ask user if they want to set zsh as default shell
-read -p "Do you want to set zsh as your default shell? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# Set zsh as default shell
+if [[ "$SET_ZSH_DEFAULT" == "true" ]]; then
     log_info "Setting zsh as default shell..."
     sudo chsh -s "$(which zsh)" "$USER"
     log_success "zsh set as default shell"
@@ -248,10 +329,8 @@ else
     log_info "Skipping zsh as default shell"
 fi
 
-# 10. Install Cascadia Code Fonts (Optional)
-read -p "Do you want to install Cascadia Code fonts? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 11. Install Cascadia Code Fonts
+if [[ "$INSTALL_CASCADIA_FONTS" == "true" ]]; then
     if [[ ! -d "$HOME/.local/share/fonts/cascadia-code" ]]; then
         log_info "Installing Cascadia Code fonts..."
         FONT_VERSION="2407.24"
@@ -270,10 +349,8 @@ else
     log_info "Skipping Cascadia Code fonts installation"
 fi
 
-# 11. Install Google Chrome (Optional)
-read -p "Do you want to install Google Chrome? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 12. Install Google Chrome
+if [[ "$INSTALL_CHROME" == "true" ]]; then
     if ! command -v google-chrome &>/dev/null; then
         log_info "Installing Google Chrome..."
         CHROME_DEB="/tmp/google-chrome-stable_current_amd64.deb"
@@ -288,13 +365,15 @@ else
     log_info "Skipping Google Chrome installation"
 fi
 
-# 12. Install uv (Fast Python package manager) (Optional)
-read -p "Do you want to install uv (Fast Python package manager)? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 13. Install uv (Fast Python package manager)
+if [[ "$INSTALL_UV" == "true" ]]; then
     if ! command -v uv &>/dev/null; then
         log_info "Installing uv..."
         curl -LsSf https://astral.sh/uv/install.sh | sh
+        # Source the cargo environment to make uv available in current session
+        if [[ -f "$HOME/.cargo/env" ]]; then
+            source "$HOME/.cargo/env"
+        fi
         log_success "uv installed"
     else
         log_info "uv already installed"
@@ -303,10 +382,8 @@ else
     log_info "Skipping uv installation"
 fi
 
-# 13. Install CMake and build tools (Optional)
-read -p "Do you want to install cmake and gettext for building from source? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 14. Install CMake and build tools
+if [[ "$INSTALL_CMAKE" == "true" ]]; then
     log_info "Installing cmake and gettext..."
     sudo apt install -y cmake gettext
     log_success "cmake and gettext installed"
@@ -314,13 +391,12 @@ else
     log_info "Skipping cmake and gettext installation"
 fi
 
-# 14. Install nvm and Node.js (Optional)
-read -p "Do you want to install nvm and Node.js? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 15. Install nvm and Node.js
+if [[ "$INSTALL_NVM" == "true" ]]; then
     export NVM_DIR="$HOME/.config/nvm"
     if [[ ! -d "$NVM_DIR" ]]; then
         log_info "Installing nvm to $NVM_DIR..."
+        mkdir -p "$NVM_DIR"
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
         # Source nvm to use it immediately
@@ -345,16 +421,14 @@ else
     log_info "Skipping nvm and Node.js installation"
 fi
 
-# 15. Install Neovim (Optional)
-read -p "Do you want to install Neovim (prebuilt binary)? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 16. Install Neovim
+if [[ "$INSTALL_NEOVIM" == "true" ]]; then
     if ! command -v nvim &>/dev/null; then
         log_info "Installing Neovim..."
         mkdir -p "$HOME/.local/bin"
         NVIM_VERSION="v0.11.4"
         NVIM_TGZ="/tmp/nvim-linux-x86_64.tar.gz"
-        curl -LO "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" -o "$NVIM_TGZ"
+        curl -L "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" -o "$NVIM_TGZ"
         tar xzf "$NVIM_TGZ" -C /tmp
         cp -r /tmp/nvim-linux-x86_64/* "$HOME/.local/"
         rm -rf /tmp/nvim-linux-x86_64 "$NVIM_TGZ"
@@ -366,15 +440,12 @@ else
     log_info "Skipping Neovim installation"
 fi
 
-# 16. Setup Python virtualenv for Neovim (Optional)
-read -p "Do you want to setup Python virtualenv for Neovim? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 17. Setup Python virtualenv for Neovim
+if [[ "$SETUP_PYTHON_VENV" == "true" ]]; then
     if [[ ! -d "$HOME/venv" ]]; then
         log_info "Setting up Python virtualenv for Neovim..."
-        python3 -m venv "$HOME/venv"
-        "$HOME/venv/bin/pip" install --upgrade pip
-        "$HOME/venv/bin/pip" install pynvim
+        uv venv "$HOME/venv"
+        uv pip install --python "$HOME/venv/bin/python" pynvim
         log_success "Python virtualenv for Neovim created"
     else
         log_info "Python virtualenv already exists at ~/venv"
@@ -383,10 +454,8 @@ else
     log_info "Skipping Python virtualenv setup"
 fi
 
-# 17. Install kubectl (Optional)
-read -p "Do you want to install kubectl? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 18. Install kubectl
+if [[ "$INSTALL_KUBECTL" == "true" ]]; then
     if ! command -v kubectl &>/dev/null; then
         log_info "Installing kubectl..."
         mkdir -p "$HOME/.local/bin"
@@ -401,10 +470,8 @@ else
     log_info "Skipping kubectl installation"
 fi
 
-# 18. Clone Neovim configuration (Optional)
-read -p "Do you want to clone your Neovim configuration? (y/N) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+# 19. Clone Neovim configuration
+if [[ "$CLONE_NVIM_CONFIG" == "true" ]]; then
     if [[ ! -d "$HOME/.config/nvim" ]]; then
         log_info "Cloning Neovim configuration..."
         git clone https://github.com/mhalder/nvim.git "$HOME/.config/nvim"
