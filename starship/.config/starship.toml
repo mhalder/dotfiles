@@ -7,7 +7,7 @@ command_timeout = 1000
 
 # Format string - defines the prompt structure
 format = """
-$directory$git_branch$git_status$git_state
+$hostname$directory$git_branch$git_status$git_state
 $package$rust$python$aws$cmd_duration$character
 """
 
@@ -75,3 +75,9 @@ min_time = 2000
 format = "took [$duration]($style) "
 style = "bold yellow"
 show_milliseconds = false
+
+[hostname]
+ssh_only = false
+format = "[$hostname]($style) "
+style = "bold green"
+disabled = false
