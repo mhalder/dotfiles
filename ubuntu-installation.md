@@ -10,18 +10,34 @@ This guide will walk you through setting up a complete development environment u
 
 ## Quick Start
 
+For most users, the automated setup script handles everything:
+
 ```bash
 # Clone the repository
-git clone <your-dotfiles-repo-url> ~/dotfiles
+git clone https://github.com/mhalder/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
-# Run the main setup script
+# Run the automated setup script
 ./setup.sh
 ```
 
+The setup script installs:
+- Base system dependencies (build tools, git, curl, etc.)
+- Desktop environment (Xorg, LightDM, i3)
+- Terminal emulator (Ghostty)
+- Rust toolchain and cargo tools
+- Dotfile manager (stau) and all configuration packages
+- Neovim with configuration
+- Node.js (nvm) with Claude Code CLI
+- Python tools (uv, virtualenv)
+- Kubernetes tools (kubectl, k9s)
+- And many more development tools
+
+See the main [README](README.md) for configuration options via environment variables.
+
 ## Manual Installation
 
-If you prefer step-by-step installation or need to customize the setup:
+If you prefer step-by-step installation or need to customize specific components:
 
 ### 1. Initial System Setup
 
@@ -145,18 +161,44 @@ sudo chsh -s $(which zsh) $USER
 
 ### 8. Optional Components
 
-#### Node.js Environment
+> **Note**: Most of these components are automatically installed by `setup.sh`. This section is for manual installation or reinstallation.
+
+#### Node.js Environment (Installed by setup.sh)
+
+The setup script installs nvm to `~/.config/nvm` with both LTS and latest Node.js:
 
 ```bash
-# Install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/latest/install.sh | bash
+# Manual installation if needed
+export NVM_DIR="$HOME/.config/nvm"
+mkdir -p "$NVM_DIR"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
-# Install Node.js
-nvm install node
+# Load nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install Node.js versions
 nvm install --lts
+nvm install node
+
+# Install Claude Code CLI and other tools
+npm install -g @anthropic-ai/claude-code opencode-ai neovim
 ```
 
-#### Neovim (from source)
+#### Neovim (Installed by setup.sh)
+
+The setup script installs Neovim v0.11.4 as a pre-built binary:
+
+```bash
+# Manual installation if needed
+mkdir -p "$HOME/.local/bin"
+NVIM_VERSION="v0.11.4"
+curl -L "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" -o /tmp/nvim.tar.gz
+tar xzf /tmp/nvim.tar.gz -C /tmp
+cp -r /tmp/nvim-linux-x86_64/* "$HOME/.local/"
+rm -rf /tmp/nvim-linux-x86_64 /tmp/nvim.tar.gz
+```
+
+Alternatively, build from source for the latest features:
 
 ```bash
 sudo apt install -y cmake gettext
@@ -166,21 +208,23 @@ make CMAKE_BUILD_TYPE=Release
 sudo make install
 ```
 
-#### Neovim Dependencies
+#### Neovim Configuration (Installed by setup.sh)
+
+The setup script clones the Neovim configuration automatically:
 
 ```bash
-# System packages
-sudo apt install -y fd-find ripgrep python3-pynvim imagemagick lldb
+# Manual installation if needed
+git clone https://github.com/mhalder/nvim.git "$HOME/.config/nvim"
+```
 
-# Cargo packages
-cargo install tree-sitter-cli
+#### Python virtualenv for Neovim (Installed by setup.sh)
 
-# Node.js provider
-npm install -g neovim
+The setup script creates a Python virtualenv with pynvim:
 
-# Python virtualenv for neovim
-python3 -m venv ~/venv
-~/venv/bin/pip install pynvim
+```bash
+# Manual installation if needed
+uv venv "$HOME/venv"
+uv pip install --python "$HOME/venv/bin/python" pynvim
 ```
 
 #### Development Tools
@@ -196,24 +240,26 @@ sudo apt install -y luarocks
 sudo apt install -y flameshot ack-grep
 ```
 
-#### Rust Development
+#### Rust Development (Installed by setup.sh)
+
+The setup script installs cargo-binstall and tmux-sessionizer:
 
 ```bash
-# cargo-binstall for faster binary installations
-curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-
-# Tmux session manager
+# Manual installation if needed
+cargo install cargo-binstall
 cargo install tmux-sessionizer
 mkdir -p ~/projects/active
 
-# lazyjj - TUI for jujutsu
+# Optional: lazyjj - TUI for jujutsu
 cargo install lazyjj
 ```
 
-#### Python Tools
+#### Python Tools (Installed by setup.sh)
+
+The setup script installs uv:
 
 ```bash
-# uv - Fast Python package manager
+# Manual installation if needed
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
@@ -224,10 +270,12 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 sudo apt install -y parcellite
 ```
 
-#### Fonts
+#### Fonts (Installed by setup.sh)
+
+The setup script installs Cascadia Code fonts:
 
 ```bash
-# Cascadia Code with Nerd Font support
+# Manual installation if needed
 FONT_VERSION="2407.24"
 wget https://github.com/microsoft/cascadia-code/releases/download/v${FONT_VERSION}/CascadiaCode-${FONT_VERSION}.zip
 unzip CascadiaCode-${FONT_VERSION}.zip -d cascadia
@@ -266,12 +314,16 @@ sudo usermod -aG docker $USER
 
 **Note:** Log out and back in for docker group membership to take effect.
 
-#### Kubectl
+#### Kubectl (Installed by setup.sh)
+
+The setup script installs kubectl to `~/.local/bin/`:
 
 ```bash
+# Manual installation if needed
+mkdir -p "$HOME/.local/bin"
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
+mv kubectl "$HOME/.local/bin/"
 ```
 
 #### Kubernetes Helpers
@@ -290,10 +342,12 @@ curl -L -o ~/.local/bin/devpod "https://github.com/loft-sh/devpod/releases/lates
 chmod +x ~/.local/bin/devpod
 ```
 
-#### Web Browser
+#### Web Browser (Installed by setup.sh)
+
+The setup script installs Google Chrome:
 
 ```bash
-# Google Chrome
+# Manual installation if needed
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
