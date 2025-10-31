@@ -4,7 +4,7 @@ install_dir = "$HOME/.local/bin"
 [[tools]]
 name = "biome"
 repo = "biomejs/biome"
-version = "@biomejs/biome@2.2.7"
+version = "@biomejs/biome@2.3.2"
 
 [[tools]]
 name = "btop"
@@ -79,7 +79,7 @@ version = "v1.11.3"
 [[tools]]
 name = "terragrunt"
 repo = "gruntwork-io/terragrunt"
-version = "v0.91.2"
+version = "v0.92.1"
 
 [[tools]]
 name = "tofu"
