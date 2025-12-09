@@ -24,9 +24,9 @@ gui:
   showDivergenceFromBaseBranch: onlyArrow
   filterMode: fuzzy
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never --navigate --line-numbers --side-by-side
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never --navigate --line-numbers --side-by-side
   log:
     showGraph: "always"
     showWholeGraph: false
