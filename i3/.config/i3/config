@@ -105,7 +105,7 @@ bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
 bindsym $mod+Shift+0 move container to workspace $ws10
 
-bindsym $mod+b exec google-chrome --disable-features=EnterpriseFileObfuscation
+bindsym $mod+b exec google-chrome
 bindsym $mod+shift+p exec pavucontrol
 bindsym $mod+shift+n exec nautilus
 bindsym $mod+shift+y exec synergy
