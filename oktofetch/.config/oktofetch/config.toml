@@ -4,12 +4,12 @@ install_dir = "$HOME/.local/bin"
 [[tools]]
 name = "biome"
 repo = "biomejs/biome"
-version = "@biomejs/biome@2.3.8"
+version = "@biomejs/biome@2.3.10"
 
 [[tools]]
 name = "btop"
 repo = "aristocratos/btop"
-version = "v1.4.5"
+version = "v1.4.6"
 
 [[tools]]
 name = "delta"
@@ -44,7 +44,7 @@ version = "v0.50.16"
 [[tools]]
 name = "kind"
 repo = "kubernetes-sigs/kind"
-version = "v0.30.0"
+version = "v0.31.0"
 
 [[tools]]
 name = "krew"
@@ -64,7 +64,7 @@ version = "kustomize/v5.8.0"
 [[tools]]
 name = "lazydocker"
 repo = "jesseduffield/lazydocker"
-version = "v0.24.2"
+version = "v0.24.3"
 
 [[tools]]
 name = "lazygit"
@@ -74,7 +74,7 @@ version = "v0.57.0"
 [[tools]]
 name = "talosctl"
 repo = "siderolabs/talos"
-version = "v1.11.5"
+version = "v1.12.0"
 
 [[tools]]
 name = "terragrunt"
@@ -84,7 +84,7 @@ version = "v0.92.1"
 [[tools]]
 name = "tofu"
 repo = "opentofu/opentofu"
-version = "v1.11.1"
+version = "v1.11.2"
 
 [[tools]]
 name = "yamlfmt"
