@@ -1,5 +1,5 @@
 [settings]
-install_dir = "$HOME/.local/bin"
+install_dir = "~/.local/bin"
 
 [[tools]]
 name = "biome"
@@ -79,7 +79,7 @@ version = "v1.12.0"
 [[tools]]
 name = "terragrunt"
 repo = "gruntwork-io/terragrunt"
-version = "v0.92.1"
+version = "v0.96.1"
 
 [[tools]]
 name = "tofu"
@@ -94,14 +94,19 @@ version = "v0.20.0"
 [[tools]]
 name = "yazi"
 repo = "sxyazi/yazi"
-version = "v25.5.31"
+version = "v25.12.29"
 
 [[tools]]
 name = "ya"
 repo = "sxyazi/yazi"
-version = "v25.5.31"
+version = "v25.12.29"
 
 [[tools]]
 name = "zoxide"
 repo = "ajeetdsouza/zoxide"
 version = "v0.9.8"
+
+[[tools]]
+name = "bob"
+repo = "MordechaiHadad/bob"
+version = "v4.1.6"

@@ -1,42 +1,27 @@
 [user]
   name = Martin Halder
   email = halderm@arkadia-labs.io
-[diff]
-  colorMoved = default
-  tool = meld
+[core]
+  editor = nvim
+[init]
+  defaultBranch = main
+[push]
+  default = upstream
+[pull]
+  rebase = true
 [merge]
   conflictstyle = diff3
   tool = nvimdiff
-[color]
-  ui = auto
-  diff = auto
-  status = auto
-  branch = auto
-[core]
-  editor = nvim
-  trustExitCode = true
-  excludesfile = ~/.gitignore
-[push]
-  default = upstream
-[init]
-  defaultBranch = main
-[rebase]
-  updateRefs = true
-[rerere]
-  enabled = true
-[fetch]
-  promisor = false
-  partialClone = false
-[pager]
-  difftool = true
 [mergetool]
   prompt = false
   keepBackup = false
 [mergetool "nvimdiff"]
   layout = LOCAL,BASE,REMOTE / MERGED
+[diff]
+  colorMoved = default
 [difftool]
   prompt = false
-[difftool "nvimdiff"]
-  cmd = nvim -d $LOCAL $REMOTE
-[credential]
-  helper = !'/usr/local/bin/devpod' agent git-credentials --port 12049
+[rebase]
+  updateRefs = true
+[rerere]
+  enabled = true
