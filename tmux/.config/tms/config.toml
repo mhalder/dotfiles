@@ -7,10 +7,6 @@ path = "$HOME/projects/admin"
 depth = 10
 
 [[search_dirs]]
-path = "$HOME/projects/provision"
-depth = 10
-
-[[search_dirs]]
 path = "$HOME/.config"
 depth = 10
 

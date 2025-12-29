@@ -4,6 +4,8 @@ set -g fish_greeting
 
 # Rust/Cargo
 fish_add_path ~/.cargo/bin
+fish_add_path ~/.fzf/bin
+fish_add_path ~/.local/bin
 
 if status is-interactive
     abbr -a e exit
@@ -24,13 +26,12 @@ if status is-interactive
     # source .env
     abbr -a se 'export (cat .env | xargs -L 1)'
 
-    # docker cleanup
-    abbr -a drc 'docker rm -f (docker ps -a -q)'
-    abbr -a dri 'docker rmi -f (docker images -q)'
+    # podman cleanup
+    abbr -a drc 'podman rm -f (podman ps -a -q)'
+    abbr -a dri 'podman rmi -f (podman images -q)'
 
-    # lazygit/lazydocker
+    # lazygit
     abbr -a lz lazygit
-    abbr -a lzd lazydocker
 
     # kubernetes
     abbr -a kx kubectx
