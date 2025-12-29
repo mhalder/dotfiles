@@ -1,5 +1,5 @@
 [settings]
-install_dir = "$HOME/.local/bin"
+install_dir = "/home/halderm/.local/bin"
 
 [[tools]]
 name = "biome"
@@ -105,3 +105,8 @@ version = "v25.5.31"
 name = "zoxide"
 repo = "ajeetdsouza/zoxide"
 version = "v0.9.8"
+
+[[tools]]
+name = "bob"
+repo = "MordechaiHadad/bob"
+version = "v4.1.6"

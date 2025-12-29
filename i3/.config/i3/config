@@ -9,10 +9,7 @@ font pango:Cascadia Code, Regular 12
 exec_always --no-startup-id feh --bg-scale ~/.background.png
 
 # disable screen blanking and DPMS
-exec_always --no-startup-id xset s off
-exec_always --no-startup-id xset s noblank
-exec_always --no-startup-id xset -dpms
-exec_always --no-startup-id gsettings set org.gnome.desktop.session idle-delay 0
+exec_always --no-startup-id xset s off s noblank -dpms
 
 set $mod Mod4
 
@@ -29,7 +26,7 @@ for_window [class=".*"] border pixel 3
 bindsym $mod+Shift+w kill
 
 # start dmenu (a program launcher)
-bindsym $mod+z exec dmenu_run -fn "Ubuntu Mono 14" -i -p "Launch"
+bindsym $mod+z exec dmenu_run -fn "Cascadia Code 14" -i -p "Launch"
 
 # change focus
 bindsym $mod+h focus left
@@ -168,8 +165,7 @@ bindsym $mod+minus scratchpad show
 # switch keyboard layout
 bindsym $mod+Shift+i exec --no-startup-id setxkbmap -model pc105 -layout us -variant intl
 bindsym $mod+Shift+u exec --no-startup-id setxkbmap -model pc105 -layout us
-bindsym $mod+Shift+s exec --no-startup-id shutter
-bindsym $mod+Shift+t exec --no-startup-id trackpad
+bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 bindsym $mod+Shift+g exec --no-startup-id /opt/enpass/Enpass showassistant
 
 # configure gaps
@@ -188,7 +184,8 @@ client.background       #ffffff
 # Only enable outer gaps when there is exactly one window or split container on the workspace.
 smart_gaps inverse_outer
 
-exec nm-applet
-exec xfce4-power-manager
-exec indicator-sound-switcher
-exec setxkbmap -model pc105 -layout us
+exec --no-startup-id nm-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id indicator-sound-switcher
+exec --no-startup-id parcellite
+exec --no-startup-id setxkbmap -model pc105 -layout us
