@@ -39,6 +39,7 @@ cd ~/dotfiles
 ```
 
 The setup script will:
+
 - Configure passwordless sudo (optional)
 - Install base system dependencies
 - Set up Xorg and LightDM display manager (optional)
@@ -67,6 +68,7 @@ INSTALL_GHOSTTY=false INSTALL_NEOVIM=false ./setup.sh
 ```
 
 Available options (all default to `true`):
+
 - `ENABLE_PASSWORDLESS_SUDO` - Configure passwordless sudo
 - `INSTALL_XORG_DESKTOP` - Install Xorg and LightDM
 - `INSTALL_I3` - Install i3 window manager
@@ -98,11 +100,13 @@ dotfiles/
 ```
 
 Each package directory contains:
+
 - Configuration files that will be symlinked to your home directory
 - Optional `setup.sh` script for post-installation tasks (e.g., installing plugins, dependencies)
 - Optional `teardown.sh` script for cleanup when removing the package
 
 Setup scripts receive these environment variables:
+
 - `STAU_DIR`: Path to the dotfiles directory
 - `STAU_PACKAGE`: Name of the current package
 - `STAU_TARGET`: Target installation directory (default: `$HOME`)
@@ -159,6 +163,7 @@ Setup scripts receive these environment variables:
 ## What Gets Installed
 
 The automated setup script installs a complete development environment including:
+
 - **Base system**: Xorg, LightDM, i3 window manager
 - **Terminal**: Ghostty terminal emulator
 - **Languages**: Rust, Go, Python, Node.js (via nvm)
