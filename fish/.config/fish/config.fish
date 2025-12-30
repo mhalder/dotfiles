@@ -50,4 +50,10 @@ if status is-interactive
             nvm use --silent
         end
     end
+
+    # Start sesh session picker if not already in tmux
+    if not set -q TMUX
+        set -l session (sesh list | fzf --height 40% --reverse --border)
+        and sesh connect $session
+    end
 end
