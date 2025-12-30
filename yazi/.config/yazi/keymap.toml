@@ -1,0 +1,51 @@
+# ~/.config/yazi/keymap.toml
+
+# Quick bookmarks
+[[mgr.prepend_keymap]]
+on   = ["g", "h"]
+run  = "cd ~"
+desc = "Go to home"
+
+[[mgr.prepend_keymap]]
+on   = ["g", "c"]
+run  = "cd ~/.config"
+desc = "Go to ~/.config"
+
+[[mgr.prepend_keymap]]
+on   = ["g", "d"]
+run  = "cd ~/Downloads"
+desc = "Go to ~/Downloads"
+
+[[mgr.prepend_keymap]]
+on   = ["g", "."]
+run  = "cd ~/.config/dotfiles"
+desc = "Go to dotfiles"
+
+# Toggle hidden files
+[[mgr.prepend_keymap]]
+on   = "."
+run  = "hidden toggle"
+desc = "Toggle hidden files"
+
+# Trash instead of delete
+[[mgr.prepend_keymap]]
+on   = "d"
+run  = 'shell -- trash-put "$@"'
+desc = "Move to trash"
+
+[[mgr.prepend_keymap]]
+on   = "D"
+run  = "remove"
+desc = "Permanently delete"
+
+# Open shell
+[[mgr.prepend_keymap]]
+on   = "!"
+run  = 'shell "$SHELL" --block'
+desc = "Open shell here"
+
+# Lazygit
+[[mgr.prepend_keymap]]
+on   = ["g", "g"]
+run  = 'shell "lazygit" --block'
+desc = "Open lazygit"
