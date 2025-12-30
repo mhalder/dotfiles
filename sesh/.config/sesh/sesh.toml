@@ -5,14 +5,18 @@
 dir_length = 2
 
 # Exclude directories from results
-blacklist = ["node_modules", "target", ".git", "vendor", "build", "dist"]
+blacklist = [
+  "node_modules", "target", ".git", "vendor", "build", "dist",
+  ".cache", "__pycache__", ".venv", "venv", ".direnv",
+  "coverage", ".next", ".nuxt", "out"
+]
 
 # Sort order for session list
 sort_order = ["config", "tmux", "zoxide"]
 
 # Default session settings
 [default_session]
-startup_command = "nvim"
+startup_script = "nvim"
 preview_command = "eza --all --git --icons --color=always {}"
 
 # Named sessions
@@ -21,9 +25,19 @@ name = "dotfiles"
 path = "~/.config/dotfiles"
 
 [[session]]
+name = "nvim"
+path = "~/.config/nvim"
+
+[[session]]
 name = "projects-active"
 path = "~/projects/active"
 
 [[session]]
 name = "projects-work"
 path = "~/projects/work"
+
+[tmux]
+switch_to_last = true
+
+[zoxide]
+min_score = 10
