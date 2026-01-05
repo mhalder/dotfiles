@@ -1,7 +1,7 @@
 # Sesh configuration
 # https://github.com/joshmedeski/sesh
 
-# Show last 2 path components (e.g., "active/my-project")
+# Show last 2 path components (e.g., "ai/serena")
 dir_length = 2
 
 # Exclude directories from results
@@ -16,7 +16,7 @@ sort_order = ["config", "tmux", "zoxide"]
 
 # Default session settings
 [default_session]
-startup_command = "nvim"
+startup_command = "[ -f README.md ] && nvim README.md || yazi"
 preview_command = "eza --all --git --icons --color=always {}"
 
 # Named sessions
@@ -29,12 +29,36 @@ name = "nvim"
 path = "~/.config/nvim"
 
 [[session]]
-name = "projects-active"
-path = "~/projects/active"
+name = "dashboard"
+path = "~/projects/dashboard"
 
 [[session]]
-name = "projects-work"
+name = "ai"
+path = "~/projects/ai"
+
+[[session]]
+name = "tools"
+path = "~/projects/tools"
+
+[[session]]
+name = "infra"
+path = "~/projects/infra"
+
+[[session]]
+name = "arkadia"
+path = "~/projects/arkadia"
+
+[[session]]
+name = "work"
 path = "~/projects/work"
+
+[[session]]
+name = "learning"
+path = "~/projects/learning"
+
+[[session]]
+name = "scratch"
+path = "~/projects/scratch"
 
 [tmux]
 switch_to_last = true

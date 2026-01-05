@@ -1,5 +1,6 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
+set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
 set -g fish_greeting
 
 # Rust/Cargo
@@ -27,9 +28,11 @@ if status is-interactive
     # source .env
     abbr -a se 'export (cat .env | xargs -L 1)'
 
-    # podman cleanup
+    # podman
     abbr -a drc 'podman rm -f (podman ps -a -q)'
     abbr -a dri 'podman rmi -f (podman images -q)'
+    abbr -a pd 'flatpak run io.podman_desktop.PodmanDesktop'
+    podman completion fish | source
 
     # lazygit
     abbr -a lz lazygit

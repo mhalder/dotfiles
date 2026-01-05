@@ -32,6 +32,9 @@ git:
     showWholeGraph: false
     order: "topo-order"
   skipHookPrefix: wip
+os:
+  edit: 'LAZYGIT_LAUNCHED=1 nvim {{filename}}'
+  editAtLine: 'LAZYGIT_LAUNCHED=1 nvim +{{line}} {{filename}}'
 quitOnTopLevelReturn: true
 notARepository: quit
 keybinding:

@@ -6,7 +6,7 @@
 font pango:Cascadia Code, Regular 12
 
 # set background
-exec_always --no-startup-id feh --bg-scale ~/.background.jpg
+exec_always --no-startup-id feh --bg-scale ~/.background.png
 
 # disable screen blanking and DPMS
 exec_always --no-startup-id xset s off s noblank -dpms
