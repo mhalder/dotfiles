@@ -13,9 +13,10 @@ Analyze changes and create well-formatted commits using conventional commit form
 1. Run `git status` to see staged, unstaged, and untracked files
 2. Run `git diff --staged` (or `git diff` if nothing staged) to view changes
 3. Run `git log --oneline -5` to match existing commit style
-4. Stage changes with `git add` if needed (ask user if unclear what to stage)
-5. Create commit with conventional format (see below)
-6. Run `git status` to verify success
+4. **Run /update-readme skill** to ensure documentation is in sync with changes
+5. Stage changes with `git add` if needed (ask user if unclear what to stage)
+6. Create commit with conventional format (see below)
+7. Run `git status` to verify success
 
 ## Conventional commit format
 
