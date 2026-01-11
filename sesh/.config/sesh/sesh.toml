@@ -21,11 +21,11 @@ preview_command = "eza --all --git --icons --color=always {}"
 
 # Named sessions
 [[session]]
-name = ".config/dotfiles"
+name = "_config/dotfiles"
 path = "~/.config/dotfiles"
 
 [[session]]
-name = ".config/nvim"
+name = "_config/nvim"
 path = "~/.config/nvim"
 
 [[session]]
