@@ -144,6 +144,13 @@ Setup scripts receive these environment variables:
 - **starship** - Cross-shell prompt with customizable styling and git integration
 - **oktofetch** - Binary tool manager for installing and updating CLI development tools
 
+### AI & Automation
+
+- **claude** - Claude Code CLI configuration including:
+  - Custom agents for specialized tasks (architect, cloud, kubernetes, testing, documentation)
+  - Skills for common workflows (commit, review-pr, ansible, terraform, etc.)
+  - Hooks for automated suggestions and workflow improvements
+
 ### System Tools
 
 - **atuin** - Advanced shell history management with:
