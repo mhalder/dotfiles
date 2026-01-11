@@ -21,47 +21,47 @@ preview_command = "eza --all --git --icons --color=always {}"
 
 # Named sessions
 [[session]]
-name = "dotfiles"
+name = ".config/dotfiles"
 path = "~/.config/dotfiles"
 
 [[session]]
-name = "nvim"
+name = ".config/nvim"
 path = "~/.config/nvim"
 
 [[session]]
-name = "dashboard"
+name = "projects/dashboard"
 path = "~/projects/dashboard"
 
 [[session]]
-name = "ai"
+name = "projects/ai"
 path = "~/projects/ai"
 
 [[session]]
-name = "tools"
+name = "projects/tools"
 path = "~/projects/tools"
 
 [[session]]
-name = "infra"
+name = "projects/infra"
 path = "~/projects/infra"
 
 [[session]]
-name = "arkadia"
+name = "projects/arkadia"
 path = "~/projects/arkadia"
 
 [[session]]
-name = "work"
+name = "projects/work"
 path = "~/projects/work"
 
 [[session]]
-name = "learning"
+name = "projects/learning"
 path = "~/projects/learning"
 
 [[session]]
-name = "scratch"
+name = "projects/scratch"
 path = "~/projects/scratch"
 
 [[session]]
-name = "worktrees"
+name = "projects/worktrees"
 path = "~/projects/worktrees"
 
 # AI projects

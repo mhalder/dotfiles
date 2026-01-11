@@ -30,12 +30,12 @@ desc = "Toggle hidden files"
 # Trash instead of delete
 [[mgr.prepend_keymap]]
 on   = "d"
-run  = 'shell -- trash-put "$@"'
+run  = "remove"
 desc = "Move to trash"
 
 [[mgr.prepend_keymap]]
 on   = "D"
-run  = "remove"
+run  = "remove --permanently"
 desc = "Permanently delete"
 
 # Open shell
