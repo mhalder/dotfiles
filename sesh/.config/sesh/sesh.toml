@@ -166,10 +166,6 @@ name = "tools/stau"
 path = "~/projects/tools/stau"
 
 [[session]]
-name = "tools/zmk"
-path = "~/projects/tools/zmk"
-
-[[session]]
 name = "tools/zmk-config"
 path = "~/projects/tools/zmk-config"
 
