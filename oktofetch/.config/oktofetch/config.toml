@@ -39,7 +39,7 @@ version = "v0.37.0"
 [[tools]]
 name = "k9s"
 repo = "derailed/k9s"
-version = "v0.50.16"
+version = "v0.50.18"
 
 [[tools]]
 name = "kind"

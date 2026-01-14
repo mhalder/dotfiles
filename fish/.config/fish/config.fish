@@ -26,7 +26,7 @@ if status is-interactive
     abbr -a lt 'eza --tree'
 
     # source .env
-    abbr -a se 'export (cat .env | xargs -L 1)'
+    abbr -a se 'bass source .env'
 
     # podman
     abbr -a drc 'podman rm -f (podman ps -a -q)'
