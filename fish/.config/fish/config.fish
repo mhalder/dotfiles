@@ -2,6 +2,7 @@ set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
 set -g fish_greeting
+set -g fish_key_bindings fish_vi_key_bindings
 
 # Rust/Cargo
 fish_add_path ~/.cargo/bin
