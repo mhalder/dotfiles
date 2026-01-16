@@ -22,32 +22,34 @@ The skill accepts optional arguments in the format:
    - If no args: ask for repository URL
    - Directory name: use provided name, or derive from repo URL (last part without .git)
 2. **Determine directory name** if not provided (default: derive from repo URL)
-3. **Create directory structure:**
+3. **Create directory structure** (use absolute path for `<repo-path>`):
    ```bash
-   mkdir -p <directory-name>
-   git clone --bare <repo-url> <directory-name>/.git
+   mkdir -p <repo-path>
+   git clone --bare <repo-url> <repo-path>/.git
    ```
-4. **Configure remote tracking:**
+4. **Configure remote tracking** (use `-C` to target the repo):
    ```bash
-   cd <directory-name>
-   git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+   git -C <repo-path> config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
    ```
 5. **Delete local branches** created during clone:
    ```bash
-   git branch -D main  # or whatever branches exist
+   git -C <repo-path> branch | sed 's/^[* ]*//' | xargs -r git -C <repo-path> branch -D
    ```
 6. **Fetch remote branches:**
    ```bash
-   git fetch
+   git -C <repo-path> fetch
    ```
 7. **Verify setup:**
    ```bash
-   git branch -a  # Should show only remotes/origin/* branches
-   git worktree list  # Should show only bare repo
+   git -C <repo-path> branch -a  # Should show only remotes/origin/* branches
+   git -C <repo-path> worktree list  # Should show only bare repo
    ```
-8. **Ask user if they want to create initial worktree(s)**
+8. **Create main worktree with tracking:**
+   ```bash
+   git -C <repo-path> worktree add -b main main origin/main
+   ```
+9. **Ask user if they want to create additional worktree(s)**
    - If yes, create with: `git worktree add -b <branch> <path> origin/<branch>`
-   - Example: `git worktree add -b main main origin/main`
 
 ## Workflow explanation
 
@@ -82,8 +84,10 @@ rmd-devops-networking/
 
 ## Rules
 
+- MUST use absolute paths and `git -C <repo-path>` instead of `cd`
 - MUST delete all local branches after clone (keep only remotes)
 - MUST configure remote fetch before fetching
 - MUST use `-b` flag when creating worktrees to create tracking branches
-- Ask before creating worktrees (don't assume which branches user needs)
+- MUST always create a main worktree tracking origin/main
+- Ask before creating additional worktrees beyond main
 - Verify the setup shows `(bare)` in `git worktree list`
