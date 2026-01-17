@@ -44,8 +44,11 @@ Closes #42
 - MUST use heredoc for multi-line messages
 - Never add "Generated with Claude Code" or attribution
 - Never add Co-Authored-By headers
+- Never add attribution to PR descriptions either
 - Never use `git commit --amend` unless explicitly requested
 - Never use `git push` unless explicitly requested
+- Never create a PR without explicit user approval
+- After committing, ASK the user before pushing or creating a PR
 - Never stage files containing secrets (.env, credentials, API keys)
 
 ## Heredoc format
