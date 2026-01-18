@@ -1,10 +1,13 @@
 # Sesh configuration
 # https://github.com/joshmedeski/sesh
 
+# Strict mode catches typos and invalid config options
+strict_mode = true
+
 # Show last 2 path components (e.g., "ai/serena")
 dir_length = 2
 
-# Exclude directories from results
+# Exclude sessions by name (regex patterns matched against session names, not paths)
 blacklist = [
   "node_modules", "target", ".git", "vendor", "build", "dist",
   ".cache", "__pycache__", ".venv", "venv", ".direnv",
@@ -18,164 +21,3 @@ sort_order = ["config", "tmux", "zoxide"]
 [default_session]
 startup_command = "[ -f README.md ] && nvim README.md || yazi"
 preview_command = "eza --all --git --icons --color=always {}"
-
-# Named sessions
-[[session]]
-name = "_config/dotfiles"
-path = "~/.config/dotfiles"
-
-[[session]]
-name = "_config/nvim"
-path = "~/.config/nvim"
-
-[[session]]
-name = "projects/dashboard"
-path = "~/projects/dashboard"
-
-[[session]]
-name = "projects/ai"
-path = "~/projects/ai"
-
-[[session]]
-name = "projects/tools"
-path = "~/projects/tools"
-
-[[session]]
-name = "projects/infra"
-path = "~/projects/infra"
-
-[[session]]
-name = "projects/arkadia"
-path = "~/projects/arkadia"
-
-[[session]]
-name = "projects/work"
-path = "~/projects/work"
-
-[[session]]
-name = "projects/learning"
-path = "~/projects/learning"
-
-[[session]]
-name = "projects/scratch"
-path = "~/projects/scratch"
-
-[[session]]
-name = "projects/worktrees"
-path = "~/projects/worktrees"
-
-# AI projects
-[[session]]
-name = "ai/claude-context"
-path = "~/projects/ai/claude-context"
-
-[[session]]
-name = "ai/lightning"
-path = "~/projects/ai/lightning"
-
-[[session]]
-name = "ai/qdrant"
-path = "~/projects/ai/qdrant"
-
-[[session]]
-name = "ai/qdrant-mcp-server"
-path = "~/projects/ai/qdrant-mcp-server"
-
-[[session]]
-name = "ai/serena"
-path = "~/projects/ai/serena"
-
-[[session]]
-name = "ai/sidekick.nvim"
-path = "~/projects/ai/sidekick.nvim"
-
-# Arkadia projects
-[[session]]
-name = "arkadia/dirk"
-path = "~/projects/arkadia/dirk"
-
-[[session]]
-name = "arkadia/ledger"
-path = "~/projects/arkadia/ledger"
-
-[[session]]
-name = "arkadia/roche"
-path = "~/projects/arkadia/roche"
-
-[[session]]
-name = "arkadia/website"
-path = "~/projects/arkadia/website"
-
-[[session]]
-name = "arkadia/zugerkb"
-path = "~/projects/arkadia/zugerkb"
-
-# Infra projects
-[[session]]
-name = "infra/devcontainer"
-path = "~/projects/infra/devcontainer"
-
-[[session]]
-name = "infra/infomaniak"
-path = "~/projects/infra/infomaniak"
-
-[[session]]
-name = "infra/talos"
-path = "~/projects/infra/talos"
-
-[[session]]
-name = "infra/terragrunt"
-path = "~/projects/infra/terragrunt"
-
-# Learning projects
-[[session]]
-name = "learning/aoc"
-path = "~/projects/learning/aoc"
-
-[[session]]
-name = "learning/dojo"
-path = "~/projects/learning/dojo"
-
-[[session]]
-name = "learning/go"
-path = "~/projects/learning/go"
-
-[[session]]
-name = "learning/rust"
-path = "~/projects/learning/rust"
-
-[[session]]
-name = "learning/typescript"
-path = "~/projects/learning/typescript"
-
-# Tools projects
-[[session]]
-name = "tools/burst"
-path = "~/projects/tools/burst"
-
-[[session]]
-name = "tools/chrome-firefox"
-path = "~/projects/tools/chrome-firefox"
-
-[[session]]
-name = "tools/oktofetch"
-path = "~/projects/tools/oktofetch"
-
-[[session]]
-name = "tools/stau"
-path = "~/projects/tools/stau"
-
-[[session]]
-name = "tools/zmk-config"
-path = "~/projects/tools/zmk-config"
-
-# Worktrees
-[[session]]
-name = "worktrees/stau"
-path = "~/projects/worktrees/stau"
-
-[tmux]
-switch_to_last = true
-
-[zoxide]
-min_score = 10

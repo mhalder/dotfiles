@@ -117,22 +117,24 @@ Setup scripts receive these environment variables:
 
 ### Shell & Terminal
 
-- **bash** - Bash shell configuration with custom aliases, functions, and prompt settings
 - **fish** - Fish shell configuration with:
   - Fisher plugin manager and plugin sync
   - fzf binary installation and fzf.fish integration
   - Custom functions and aliases
-- **zsh** - Z shell configuration featuring:
-  - Powerlevel10k theme for enhanced prompt
-  - Custom aliases and functions
-  - Plugin management and integrations
-  - History settings and completion enhancements
 - **tmux** - Terminal multiplexer configuration with:
   - Custom key bindings
   - Status bar customization
   - Plugin management via TPM (Tmux Plugin Manager)
   - Mouse support and copy-paste improvements
-- **terminal** - Terminal emulator settings including colors, fonts, and behavior
+- **sesh** - Tmux session manager configuration with:
+  - Zoxide integration for smart directory jumping
+  - Configurable session startup commands
+  - Directory blacklist for cleaner session lists
+- **ghostty** - Ghostty terminal emulator configuration with:
+  - TokyoNight theme
+  - Cascadia Code font
+  - Transparency and window decoration settings
+  - Fish shell integration
 
 ### Development Tools
 
@@ -143,9 +145,9 @@ Setup scripts receive these environment variables:
 - **gh** - GitHub CLI settings for streamlined GitHub workflows
 - **jj** - Jujutsu version control system configuration with custom aliases and workflows
 - **lazy** - LazyGit and LazyVim configurations for efficient git workflows and Neovim setup
-- **bin** - Custom scripts and executables for automation and workflows
-- **starship** - Cross-shell prompt with customizable styling and git integration
 - **oktofetch** - Binary tool manager for installing and updating CLI development tools
+- **eza** - Modern ls replacement configuration with git integration and icons
+- **ripgrep** - Fast search tool configuration
 
 ### AI & Automation
 
@@ -156,10 +158,6 @@ Setup scripts receive these environment variables:
 
 ### System Tools
 
-- **atuin** - Advanced shell history management with:
-  - Cross-shell history sync
-  - Searchable command history
-  - Privacy-focused settings
 - **btop** - Resource monitor with customizable themes and layouts
 - **dunst** - Lightweight notification daemon configuration with custom styling
 - **i3** - Tiling window manager configuration including:
@@ -169,6 +167,7 @@ Setup scripts receive these environment variables:
   - Application-specific rules
 - **yazi** - Modern terminal file manager with vim-like keybindings
 - **k9s** - Kubernetes CLI tool configuration for cluster management
+- **containers** - Container registry configuration for Podman/Docker
 
 ## What Gets Installed
 
@@ -191,9 +190,10 @@ Several packages include automated setup scripts that run after symlinking:
 
 - **fish** - Installs fzf binary, Fisher plugin manager, and syncs fish plugins
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
-- **zsh** - Sets up oh-my-zsh, Powerlevel10k theme, and custom plugins
+- **sesh** - Installs sesh binary via go install
+- **yazi** - Installs yazi plugins and dependencies
 
-These scripts are automatically executed by the main setup.sh script, ensuring complete configuration on new machines.
+These scripts are automatically executed by stau during package installation.
 
 ## Managing Packages
 
@@ -206,7 +206,7 @@ stau status                     # Check installed packages
 
 # Install/uninstall packages
 stau install <package-name>     # Install specific package
-stau install zsh tmux git       # Install multiple packages
+stau install fish tmux git      # Install multiple packages
 stau uninstall <package-name>   # Remove a package
 
 # Adopt existing configs
