@@ -24,7 +24,7 @@ if status is-interactive
     abbr -a ls eza
     abbr -a ll 'eza -l'
     abbr -a la 'eza -la'
-    abbr -a lt 'eza --tree'
+    abbr -a lt 'eza -T -L 2'
 
     # source .env
     abbr -a se 'bass source .env'
