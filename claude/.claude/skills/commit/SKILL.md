@@ -46,10 +46,13 @@ Closes #42
 - Never add Co-Authored-By headers
 - Never add attribution to PR descriptions either
 - Never use `git commit --amend` unless explicitly requested
+- Never use `git reset --hard` - it destroys local changes
 - Never use `git push` unless explicitly requested
+- Never push directly to main/master; always use a feature branch and PR
 - Never create a PR without explicit user approval
 - After committing, ASK the user before pushing or creating a PR
 - Never stage files containing secrets (.env, credentials, API keys)
+- Never stage or commit CLAUDE.md files
 
 ## Heredoc format
 
