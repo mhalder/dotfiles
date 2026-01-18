@@ -118,6 +118,10 @@ Setup scripts receive these environment variables:
 ### Shell & Terminal
 
 - **bash** - Bash shell configuration with custom aliases, functions, and prompt settings
+- **fish** - Fish shell configuration with:
+  - Fisher plugin manager and plugin sync
+  - fzf binary installation and fzf.fish integration
+  - Custom functions and aliases
 - **zsh** - Z shell configuration featuring:
   - Powerlevel10k theme for enhanced prompt
   - Custom aliases and functions
@@ -138,7 +142,6 @@ Setup scripts receive these environment variables:
   - Commit templates and merge strategies
 - **gh** - GitHub CLI settings for streamlined GitHub workflows
 - **jj** - Jujutsu version control system configuration with custom aliases and workflows
-- **fzf** - Fuzzy finder configuration with custom key bindings and integration with shell history
 - **lazy** - LazyGit and LazyVim configurations for efficient git workflows and Neovim setup
 - **bin** - Custom scripts and executables for automation and workflows
 - **starship** - Cross-shell prompt with customizable styling and git integration
@@ -186,7 +189,7 @@ Several packages include automated setup scripts that run after symlinking:
 
 ### Packages with Setup Scripts
 
-- **fzf** - Clones fzf and fzf-git repositories, runs fzf installer
+- **fish** - Installs fzf binary, Fisher plugin manager, and syncs fish plugins
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
 - **zsh** - Sets up oh-my-zsh, Powerlevel10k theme, and custom plugins
 
