@@ -9,9 +9,9 @@ dir_length = 2
 
 # Exclude sessions by name (regex patterns matched against session names, not paths)
 blacklist = [
-  "node_modules", "target", ".git", "vendor", "build", "dist",
-  ".cache", "__pycache__", ".venv", "venv", ".direnv",
-  "coverage", ".next", ".nuxt", "out"
+  "node_modules", "target", "\\.git", "vendor", "build", "dist",
+  "\\.cache", "__pycache__", "\\.venv", "venv", "\\.direnv",
+  "coverage", "\\.next", "\\.nuxt", "out"
 ]
 
 # Sort order for session list
