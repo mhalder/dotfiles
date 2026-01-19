@@ -71,11 +71,12 @@ For branches that don't exist on the remote yet:
    ```bash
    git -C <repo-path> worktree add -b <branch> <path> origin/main
    ```
-2. After first commit, push with explicit remote branch creation:
+2. **Immediately fix tracking** to point to the future remote branch (not origin/main):
    ```bash
-   git -C <repo-path>/<path> push -u origin <branch>:<branch>
+   git -C <repo-path>/<path> config branch.<branch>.remote origin
+   git -C <repo-path>/<path> config branch.<branch>.merge refs/heads/<branch>
    ```
-   This creates the remote branch AND sets up proper tracking.
+   This sets tracking to `origin/<branch>` even though it doesn't exist yet. Git will show it as "gone" until pushed.
 
 **Why this matters:** Without step 2, the branch tracks `origin/main`, and `git push` will push directly to main instead of creating a PR-able feature branch.
 
@@ -105,6 +106,6 @@ rmd-devops-networking/
 - MUST configure remote fetch before fetching
 - MUST use `-b` flag when creating worktrees to create tracking branches
 - MUST always create a main worktree tracking origin/main
-- For NEW feature branches, inform user to push with `git push -u origin <branch>:<branch>` to set up proper tracking
+- For NEW feature branches, MUST immediately fix tracking with `git config branch.<branch>.remote origin` and `git config branch.<branch>.merge refs/heads/<branch>`
 - Ask before creating additional worktrees beyond main
 - Verify the setup shows `(bare)` in `git worktree list`
