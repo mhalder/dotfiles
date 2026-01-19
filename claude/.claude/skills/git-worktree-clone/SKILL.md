@@ -63,6 +63,22 @@ This setup creates:
   - No need to stash changes when switching branches
   - Shared git database saves space
 
+## Creating worktrees for NEW feature branches
+
+For branches that don't exist on the remote yet:
+
+1. Create worktree based on main:
+   ```bash
+   git -C <repo-path> worktree add -b <branch> <path> origin/main
+   ```
+2. After first commit, push with explicit remote branch creation:
+   ```bash
+   git -C <repo-path>/<path> push -u origin <branch>:<branch>
+   ```
+   This creates the remote branch AND sets up proper tracking.
+
+**Why this matters:** Without step 2, the branch tracks `origin/main`, and `git push` will push directly to main instead of creating a PR-able feature branch.
+
 ## Example usage
 
 ```bash
@@ -89,5 +105,6 @@ rmd-devops-networking/
 - MUST configure remote fetch before fetching
 - MUST use `-b` flag when creating worktrees to create tracking branches
 - MUST always create a main worktree tracking origin/main
+- For NEW feature branches, inform user to push with `git push -u origin <branch>:<branch>` to set up proper tracking
 - Ask before creating additional worktrees beyond main
 - Verify the setup shows `(bare)` in `git worktree list`
