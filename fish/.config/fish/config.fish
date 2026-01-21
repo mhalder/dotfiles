@@ -47,7 +47,7 @@ if status is-interactive
     zoxide init fish | source
 
     # nvm.fish - set default and auto switch on directory change
-    set -g nvm_default_version lts
+    set -g nvm_default_version 22
     set --query nvm_current_version || nvm use --silent $nvm_default_version
     function _nvm_auto_use --on-variable PWD
         if test -f .nvmrc
