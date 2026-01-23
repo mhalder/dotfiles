@@ -74,17 +74,17 @@ version = "v0.58.1"
 [[tools]]
 name = "talosctl"
 repo = "siderolabs/talos"
-version = "v1.12.1"
+version = "v1.12.2"
 
 [[tools]]
 name = "terragrunt"
 repo = "gruntwork-io/terragrunt"
-version = "v0.97.2"
+version = "v0.98.0"
 
 [[tools]]
 name = "tofu"
 repo = "opentofu/opentofu"
-version = "v1.11.3"
+version = "v1.11.4"
 
 [[tools]]
 name = "yamlfmt"
@@ -94,12 +94,12 @@ version = "v0.21.0"
 [[tools]]
 name = "yazi"
 repo = "sxyazi/yazi"
-version = "v26.1.4"
+version = "v26.1.22"
 
 [[tools]]
 name = "ya"
 repo = "sxyazi/yazi"
-version = "v26.1.4"
+version = "v26.1.22"
 
 [[tools]]
 name = "zoxide"
