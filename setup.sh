@@ -4,8 +4,7 @@ set -e
 echo "[INFO] Starting setup..."
 
 # Base packages
-sudo apt update
-sudo apt install -y \
+sudo apt-get install -y \
   build-essential curl fd-find fish git golang-go libssl-dev locales \
   pkg-config python3 python3-pip python-is-python3 ripgrep tmux unzip wget xclip
 

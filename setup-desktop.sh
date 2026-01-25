@@ -4,8 +4,7 @@ set -e
 
 echo "[INFO] Installing desktop environment..."
 
-sudo apt update
-sudo apt install -y \
+sudo apt-get install -y \
     xorg lightdm lightdm-gtk-greeter x11-xserver-utils \
     i3 i3status i3lock dunst pavucontrol arandr feh picom flameshot
 
@@ -16,13 +15,13 @@ sudo mkdir -p /etc/lightdm/lightdm.conf.d
 echo -e "[Seat:*]\nuser-session=i3" | sudo tee /etc/lightdm/lightdm.conf.d/50-i3.conf >/dev/null
 
 # Ghostty
-command -v snap &>/dev/null || sudo apt install -y snapd
+command -v snap &>/dev/null || sudo apt-get install -y snapd
 sudo snap install ghostty --classic
 
 # Chrome
 command -v google-chrome &>/dev/null || {
     wget -qO /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-    sudo apt install -y /tmp/chrome.deb
+    sudo apt-get install -y /tmp/chrome.deb
     rm /tmp/chrome.deb
 }
 
