@@ -19,12 +19,6 @@ on   = ["g", "r"]
 run  = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
 desc = "Go to git root"
 
-# Zoxide integration (requires zoxide.yazi plugin)
-[[mgr.prepend_keymap]]
-on   = "z"
-run  = "plugin zoxide"
-desc = "Jump via zoxide"
-
 # Copy file path to clipboard (X11) - with ~ for home
 [[mgr.prepend_keymap]]
 on   = "Y"
