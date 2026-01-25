@@ -24,7 +24,7 @@ version = "v0.23.4"
 [[tools]]
 name = "git-who"
 repo = "sinclairtarget/git-who"
-version = "v1.2"
+version = "v1.3"
 
 [[tools]]
 name = "govc"
