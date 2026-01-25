@@ -165,7 +165,7 @@ Setup scripts receive these environment variables:
   - Workspace management
   - i3status bar configuration
   - Application-specific rules
-- **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, and zoxide integration
+- **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, zoxide integration, and archive previews via ouch
 - **k9s** - Kubernetes CLI tool configuration for cluster management
 - **containers** - Container registry configuration for Podman/Docker
 
@@ -191,7 +191,7 @@ Several packages include automated setup scripts that run after symlinking:
 - **fish** - Installs fzf binary, Fisher plugin manager, and syncs fish plugins
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
 - **sesh** - Installs sesh binary via go install
-- **yazi** - Installs yazi plugins (zoxide), Tokyo Night flavor, and system dependencies
+- **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, and system dependencies
 
 These scripts are automatically executed by stau during package installation.
 

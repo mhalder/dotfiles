@@ -1,64 +1,49 @@
 # ~/.config/yazi/yazi.toml
 
+[plugin]
+prepend_previewers = [
+	{ url = "*.tar", run = "ouch" },
+	{ url = "*.tar.*", run = "ouch" },
+	{ url = "*.tgz", run = "ouch" },
+	{ url = "*.tbz2", run = "ouch" },
+	{ url = "*.txz", run = "ouch" },
+	{ url = "*.xz", run = "ouch" },
+	{ url = "*.gz", run = "ouch" },
+	{ url = "*.bz2", run = "ouch" },
+	{ url = "*.zst", run = "ouch" },
+	{ url = "*.zip", run = "ouch" },
+	{ url = "*.7z", run = "ouch" },
+	{ url = "*.rar", run = "ouch" },
+]
+
 [mgr]
 ratio = [1, 3, 4]
+sort_by = "natural"
+sort_dir_first = true
+show_hidden = false
+show_symlink = true
 linemode = "size"
+
+[preview]
+tab_size = 2
+max_width = 1000
+max_height = 1000
 
 [opener]
 edit = [
-	{ run = '${EDITOR:-nvim} "$@"', block = true, for = "unix" },
+	{ run = '${EDITOR:-nvim} %s', block = true, for = "unix" },
 ]
 open = [
-	{ run = 'xdg-open "$@"', orphan = true, desc = "Open with default app", for = "unix" },
-]
-play = [
-	{ run = 'mpv --force-window "$@"', orphan = true, desc = "Play in mpv", for = "unix" },
-	{ run = 'mediainfo "$@" | less', block = true, desc = "Show media info", for = "unix" },
-]
-reveal = [
-	{ run = 'xdg-open "$(dirname "$1")"', orphan = true, desc = "Reveal in file manager", for = "unix" },
-	{ run = 'exiftool "$@" | less', block = true, desc = "Show EXIF data", for = "unix" },
-]
-extract = [
-	{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
+	{ run = 'xdg-open %s', orphan = true, desc = "Open", for = "unix" },
 ]
 
 [open]
 rules = [
-	# Directories
-	{ url = "*/", use = ["edit", "open", "reveal"] },
-
-	# Text and code files
-	{ mime = "text/*", use = ["edit", "reveal"] },
-	{ mime = "application/json", use = ["edit", "reveal"] },
-	{ mime = "application/x-ndjson", use = ["edit", "reveal"] },
-	{ mime = "application/*+json", use = ["edit", "reveal"] },
-	{ mime = "application/xml", use = ["edit", "reveal"] },
-	{ mime = "application/*+xml", use = ["edit", "reveal"] },
-	{ mime = "application/javascript", use = ["edit", "reveal"] },
-	{ mime = "application/x-shellscript", use = ["edit", "reveal"] },
-
-	# Images
-	{ mime = "image/*", use = ["open", "reveal"] },
-
-	# Video and audio
-	{ mime = "video/*", use = ["play", "open", "reveal"] },
-	{ mime = "audio/*", use = ["play", "open", "reveal"] },
-
-	# Documents
-	{ mime = "application/pdf", use = ["open", "reveal"] },
-	{ mime = "application/epub+zip", use = ["open", "reveal"] },
-
-	# Archives
-	{ mime = "application/zip", use = ["extract", "reveal"] },
-	{ mime = "application/gzip", use = ["extract", "reveal"] },
-	{ mime = "application/x-tar", use = ["extract", "reveal"] },
-	{ mime = "application/x-bzip2", use = ["extract", "reveal"] },
-	{ mime = "application/x-xz", use = ["extract", "reveal"] },
-	{ mime = "application/x-7z-compressed", use = ["extract", "reveal"] },
-	{ mime = "application/x-rar", use = ["extract", "reveal"] },
-	{ mime = "application/vnd.rar", use = ["extract", "reveal"] },
-
-	# Fallback
-	{ mime = "*", use = ["edit", "open", "reveal"] },
+	{ url = "*/", use = ["edit", "open"] },
+	{ mime = "text/*", use = ["edit"] },
+	{ mime = "image/*", use = ["open"] },
+	{ mime = "video/*", use = ["open"] },
+	{ mime = "audio/*", use = ["open"] },
+	{ mime = "application/pdf", use = ["open"] },
+	{ mime = "*", use = ["edit", "open"] },
 ]
