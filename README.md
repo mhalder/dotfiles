@@ -145,7 +145,8 @@ Setup scripts receive these environment variables:
 - **gh** - GitHub CLI settings for streamlined GitHub workflows
 - **jj** - Jujutsu version control system configuration with custom aliases and workflows
 - **lazy** - LazyGit and LazyVim configurations for efficient git workflows and Neovim setup
-- **oktofetch** - Binary tool manager for installing and updating CLI development tools
+- **mise** - Runtime version manager for languages (Node, Python) and CLI tools with automatic activation
+- **fnox** - Secrets manager with HashiCorp Vault integration for secure credential management
 - **eza** - Modern ls replacement configuration with git integration and icons
 - **ripgrep** - Fast search tool configuration
 

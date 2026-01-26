@@ -33,7 +33,9 @@ if status is-interactive
     abbr -a drc 'podman rm -f (podman ps -a -q)'
     abbr -a dri 'podman rmi -f (podman images -q)'
     abbr -a pd 'flatpak run io.podman_desktop.PodmanDesktop'
-    podman completion fish | source
+    if not test -f ~/.config/fish/completions/podman.fish
+        podman completion fish > ~/.config/fish/completions/podman.fish
+    end
 
     # lazygit
     abbr -a lz lazygit
@@ -55,9 +57,28 @@ if status is-interactive
         end
     end
 
+    # Mise - runtime version manager
+    mise activate fish | source
+    if not test -f ~/.config/fish/completions/mise.fish
+        mise completion fish > ~/.config/fish/completions/mise.fish
+    end
+
+    # Fnox - secret manager
+    if test -f ~/.vault-token
+        set -gx VAULT_TOKEN (cat ~/.vault-token)
+    end
+    fnox activate fish | source
+
     # Start sesh session picker if not already in tmux
     if not set -q TMUX
         set -l session (sesh list | fzf --height 40% --reverse --border)
         and sesh connect $session
     end
+else
+    # Non-interactive shells use shims for tool access
+    mise activate fish --shims | source
+    if test -f ~/.vault-token
+        set -gx VAULT_TOKEN (cat ~/.vault-token)
+    end
+    fnox activate fish | source
 end
