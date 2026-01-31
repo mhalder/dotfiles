@@ -121,6 +121,7 @@ Setup scripts receive these environment variables:
   - Fisher plugin manager and plugin sync
   - fzf binary installation and fzf.fish integration
   - Custom functions and aliases
+  - HashiCorp Vault integration with auto-renewal utility (`vault-renew`)
 - **tmux** - Terminal multiplexer configuration with:
   - Custom key bindings
   - Status bar customization

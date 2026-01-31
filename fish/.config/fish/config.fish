@@ -1,6 +1,8 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
+set -gx VAULT_ADDR "https://vault.lan.halder.me"
+set -gx VAULT_NAMESPACE ""
 set -g fish_greeting
 set -g fish_key_bindings fish_vi_key_bindings
 
@@ -62,6 +64,10 @@ if status is-interactive
     if not test -f ~/.config/fish/completions/mise.fish
         mise completion fish > ~/.config/fish/completions/mise.fish
     end
+
+    # vault
+    abbr -a vr vault-renew
+    abbr -a vl 'vault login'
 
     # Fnox - secret manager
     if test -f ~/.vault-token

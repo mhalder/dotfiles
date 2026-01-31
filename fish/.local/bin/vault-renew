@@ -1,0 +1,272 @@
+#!/bin/bash
+set -euo pipefail
+
+# Script: vault-renew.sh
+# Purpose: Auto-renew Vault tokens to prevent expiration
+# Usage: ./vault-renew.sh {start|stop|status|restart|logs}
+
+if ! command -v vault &>/dev/null; then
+  echo "Error: vault command not found. Please install Vault CLI." >&2
+  exit 1
+fi
+
+export VAULT_ADDR=${VAULT_ADDR:?"VAULT_ADDR must be set"}
+export VAULT_NAMESPACE=${VAULT_NAMESPACE:-""}
+unset VAULT_TOKEN # Force use of ~/.vault-token to avoid stale env var
+
+# Configuration
+RENEWAL_INTERVAL=${VAULT_RENEWAL_INTERVAL:-2700} # 45 minutes by default
+MAX_RETRIES=${VAULT_RENEWAL_RETRIES:-3}
+RETRY_DELAY=${VAULT_RENEWAL_RETRY_DELAY:-5}
+PID_FILE="${TMPDIR:-/tmp}/vault-renew-${USER}.pid"
+LOG_FILE="${TMPDIR:-/tmp}/vault-renew-${USER}.log"
+MAX_LOG_SIZE=$((1024 * 1024)) # 1MB
+
+# Rotate log file if it gets too large
+rotate_log() {
+  if [[ -f "${LOG_FILE}" ]] && [[ $(stat -f%z "${LOG_FILE}" 2>/dev/null || stat -c%s "${LOG_FILE}" 2>/dev/null || echo 0) -gt ${MAX_LOG_SIZE} ]]; then
+    mv "${LOG_FILE}" "${LOG_FILE}.old"
+    touch "${LOG_FILE}"
+  fi
+}
+
+log_message() {
+  local level="${2:-INFO}"
+  rotate_log
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] [${level}] $1" | tee -a "${LOG_FILE}"
+}
+
+check_token_validity() {
+  local output
+  if output=$(vault token lookup 2>&1); then
+    return 0
+  else
+    log_message "Token validation failed: ${output}" "ERROR"
+    return 1
+  fi
+}
+
+get_token_ttl() {
+  vault token lookup -format=json 2>/dev/null | jq -r '.data.ttl' 2>/dev/null || echo "0"
+}
+
+send_notification() {
+  local title="$1"
+  local message="$2"
+  local urgency="${3:-normal}"
+
+  # Try different notification methods based on availability
+  if command -v notify-send &>/dev/null; then
+    notify-send -u "${urgency}" "${title}" "${message}"
+  elif command -v osascript &>/dev/null; then
+    # macOS notification
+    osascript -e "display notification \"${message}\" with title \"${title}\""
+  elif command -v zenity &>/dev/null; then
+    zenity --notification --text="${title}: ${message}"
+  else
+    # Fallback to terminal bell and message
+    echo -e "\a[ALERT] ${title}: ${message}" >&2
+  fi
+}
+
+renew_token() {
+  local retry_count=0
+  local ttl_before ttl_after
+
+  ttl_before=$(get_token_ttl)
+
+  while [[ ${retry_count} -lt ${MAX_RETRIES} ]]; do
+    if vault token renew >/dev/null 2>&1; then
+      ttl_after=$(get_token_ttl)
+      log_message "Successfully renewed Vault token (TTL: ${ttl_before}s -> ${ttl_after}s)"
+      return 0
+    else
+      retry_count=$((retry_count + 1))
+      log_message "Failed to renew Vault token (attempt ${retry_count}/${MAX_RETRIES})" "WARN"
+
+      if [[ ${retry_count} -lt ${MAX_RETRIES} ]]; then
+        sleep "${RETRY_DELAY}"
+      fi
+    fi
+  done
+
+  log_message "Failed to renew Vault token after ${MAX_RETRIES} attempts" "ERROR"
+  send_notification "Vault Token Renewal Failed" "Unable to renew Vault token after ${MAX_RETRIES} attempts. Please re-authenticate." "critical"
+  return 1
+}
+
+stop_renewal() {
+  if [[ -f "${PID_FILE}" ]]; then
+    local old_pid
+    old_pid=$(cat "${PID_FILE}")
+    if kill -0 "${old_pid}" 2>/dev/null; then
+      log_message "Stopping existing renewal process (PID: ${old_pid})"
+      kill -TERM "${old_pid}" 2>/dev/null
+
+      # Wait for process to terminate gracefully
+      local wait_count=0
+      while kill -0 "${old_pid}" 2>/dev/null && [[ ${wait_count} -lt 10 ]]; do
+        sleep 0.5
+        wait_count=$((wait_count + 1))
+      done
+
+      # Force kill if still running
+      if kill -0 "${old_pid}" 2>/dev/null; then
+        log_message "Force killing process ${old_pid}" "WARN"
+        kill -KILL "${old_pid}" 2>/dev/null
+      fi
+
+      rm -f "${PID_FILE}"
+    else
+      log_message "Removing stale PID file" "WARN"
+      rm -f "${PID_FILE}"
+    fi
+  fi
+}
+
+start_renewal() {
+  stop_renewal
+
+  if ! check_token_validity; then
+    echo "Error: No valid Vault token found. Please authenticate first." >&2
+    echo "Run: vault login -method=oidc" >&2
+    return 1
+  fi
+
+  local initial_ttl
+  initial_ttl=$(get_token_ttl)
+  log_message "Initial token TTL: ${initial_ttl}s"
+
+  {
+    # Create a function to handle cleanup
+    cleanup() {
+      log_message "Renewal process terminated" "INFO"
+      rm -f "${PID_FILE}"
+      exit 0
+    }
+
+    # Set up signal handlers
+    trap cleanup TERM INT HUP
+
+    while true; do
+      # Use a timeout-based sleep that can be interrupted
+      for ((i = 0; i < RENEWAL_INTERVAL; i++)); do
+        sleep 1
+        # Check if PID file was removed (indicates stop was called)
+        if [[ ! -f "${PID_FILE}" ]]; then
+          cleanup
+        fi
+      done
+
+      if ! check_token_validity; then
+        log_message "Token is no longer valid - stopping auto-renewal" "ERROR"
+        send_notification "Vault Token Expired" "Vault token is no longer valid. Auto-renewal stopped. Please re-authenticate." "critical"
+        cleanup
+      fi
+
+      # Check if TTL is critically low
+      current_ttl=$(get_token_ttl)
+      if [[ ${current_ttl} -lt 600 ]]; then
+        log_message "Token TTL critically low (${current_ttl}s), attempting immediate renewal" "WARN"
+        if ! renew_token; then
+          cleanup
+        fi
+      else
+        renew_token || true # Continue even if renewal fails (token might still be valid)
+      fi
+    done
+  } </dev/null >/dev/null 2>&1 &
+
+  local bg_pid=$!
+  echo "${bg_pid}" >"${PID_FILE}"
+  log_message "Started Vault token renewal (PID: ${bg_pid}, interval: ${RENEWAL_INTERVAL}s)"
+
+  sleep 1
+  if kill -0 "${bg_pid}" 2>/dev/null; then
+    echo "Vault token auto-renewal started successfully"
+    echo "  PID: ${bg_pid}"
+    echo "  Renewal interval: ${RENEWAL_INTERVAL}s"
+    echo "  Log file: ${LOG_FILE}"
+    echo "  Initial TTL: ${initial_ttl}s"
+  else
+    echo "Failed to start Vault token auto-renewal" >&2
+    rm -f "${PID_FILE}"
+    return 1
+  fi
+}
+# Main command handling
+case "${1:-start}" in
+start)
+  start_renewal
+  ;;
+stop)
+  stop_renewal
+  echo "Vault token auto-renewal stopped"
+  ;;
+restart)
+  echo "Restarting Vault token auto-renewal..."
+  stop_renewal
+  sleep 1
+  start_renewal
+  ;;
+status)
+  echo "Vault Configuration:"
+  echo "  VAULT_ADDR: ${VAULT_ADDR}"
+  echo "  VAULT_NAMESPACE: ${VAULT_NAMESPACE}"
+  echo ""
+
+  echo "Token Status:"
+  if check_token_validity; then
+    ttl=$(get_token_ttl)
+    echo "  Token is valid (TTL: ${ttl}s)"
+  else
+    echo "  Token is invalid or expired"
+  fi
+  echo ""
+
+  echo "Renewal Service:"
+  if [[ -f "${PID_FILE}" ]]; then
+    pid=$(cat "${PID_FILE}")
+    if kill -0 "${pid}" 2>/dev/null; then
+      echo "  Status: Running"
+      echo "  PID: ${pid}"
+      echo "  Renewal interval: ${RENEWAL_INTERVAL}s"
+      echo "  Max retries: ${MAX_RETRIES}"
+      echo "  Log file: ${LOG_FILE}"
+    else
+      echo "  Status: Not running (stale PID file)"
+      rm -f "${PID_FILE}"
+    fi
+  else
+    echo "  Status: Not running"
+  fi
+  ;;
+logs)
+  if [[ -f "${LOG_FILE}" ]]; then
+    echo "Displaying log file: ${LOG_FILE}"
+    echo "---"
+    tail -f "${LOG_FILE}"
+  else
+    echo "No log file found at: ${LOG_FILE}"
+    exit 1
+  fi
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart|status|logs}"
+  echo ""
+  echo "Commands:"
+  echo "  start    - Start the auto-renewal service"
+  echo "  stop     - Stop the auto-renewal service"
+  echo "  restart  - Restart the auto-renewal service"
+  echo "  status   - Show current status and configuration"
+  echo "  logs     - Tail the renewal service logs"
+  echo ""
+  echo "Environment Variables:"
+  echo "  VAULT_ADDR                  - Vault server address (required)"
+  echo "  VAULT_NAMESPACE             - Vault namespace (optional)"
+  echo "  VAULT_RENEWAL_INTERVAL      - Renewal interval in seconds (default: 2700)"
+  echo "  VAULT_RENEWAL_RETRIES       - Max renewal retry attempts (default: 3)"
+  echo "  VAULT_RENEWAL_RETRY_DELAY   - Delay between retries in seconds (default: 5)"
+  exit 1
+  ;;
+esac
