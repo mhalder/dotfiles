@@ -155,7 +155,7 @@ Setup scripts receive these environment variables:
 
 - **claude** - Claude Code CLI configuration including:
   - Custom agents for specialized tasks (architect, cloud, kubernetes, testing, documentation)
-  - Skills for common workflows (commit, review-pr, ansible, terraform, etc.)
+  - Skills for common workflows (commit, review-pr, ansible, terraform, obsidian-frontmatter, etc.)
   - Hooks for automated suggestions and workflow improvements
 
 ### System Tools
