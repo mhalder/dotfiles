@@ -1,0 +1,355 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Description: Connect to Corne split keyboard via bluetoothctl with retry logic
+# Usage: bt-corne [OPTIONS]
+#
+# ADAPTATION GUIDE FOR A NEW MACHINE
+# ===================================
+# This script was written for a ZMK-based Corne split keyboard over BLE.
+# To adapt it for a different machine:
+#
+# 1. Change MAC below to match your keyboard's BT address on that machine.
+#    Each ZMK BT profile slot advertises a different random MAC address, so
+#    the MAC will differ per profile slot AND per host if you use multiple.
+#    Run `bt-corne --scan` (or `bluetoothctl scan on`) to discover it.
+#
+# 2. The companion script `bt-corne-pair` (Python, same directory) must also
+#    have its MAC updated to match.
+#
+# 3. Dependencies: bluetoothctl (bluez), python3-dbus (system package).
+#    If using mise/pyenv/asdf, the system python3 at /usr/bin/python3 is
+#    required because python3-dbus C bindings are compiled against it.
+#    The script forces sys.path to /usr/lib/python3/dist-packages for this.
+#
+# LESSONS LEARNED / THINGS THAT WILL BITE YOU
+# =============================================
+#
+# PROBLEM 1: "Connected" but can't type (no HID input device)
+#   bluetoothctl shows "Connected: yes" but /proc/bus/input/devices has no
+#   Corne entry and dmesg shows no BLUETOOTH HID registration.
+#   ROOT CAUSE: Stale GATT attribute cache. BlueZ caches BLE GATT handles
+#   in /var/lib/bluetooth/<adapter>/cache/<device-mac>. After re-flashing
+#   the keyboard firmware or pressing BT_CLR, the GATT handle table changes
+#   but BlueZ keeps using cached (now invalid) handles. The HOG (HID over
+#   GATT) profile fails silently — the link-layer connection succeeds but
+#   HOGP can't read HID report descriptors.
+#   SYMPTOMS in journalctl -u bluetooth:
+#     hog-lib.c:info_read_cb() HID Information read failed: unlikely error
+#     hog-lib.c:report_reference_cb() Read Report Reference descriptor failed
+#   FIX: Stop bluetoothd, delete the cache file, restart. The --fresh flag
+#   does this automatically.
+#
+# PROBLEM 2: Pairing fails from scripts ("No agent available")
+#   bluetoothctl's `agent` and `default-agent` commands only work within an
+#   interactive bluetoothctl session with a real TTY. When called via pipes,
+#   heredocs, subprocess, or non-interactive shells, the agent registration
+#   silently fails. Then pairing fails with:
+#     src/device.c:new_auth() No agent available for request type 2
+#     device_confirm_passkey: Operation not permitted
+#   FIX: The companion bt-corne-pair Python script registers a D-Bus agent
+#   directly via the BlueZ D-Bus API, keeping it alive for the full
+#   pair+trust+connect flow. This works without a TTY and without sudo.
+#
+# PROBLEM 3: bluetoothctl hangs in scripts
+#   Many bluetoothctl commands block indefinitely when there's no TTY or
+#   when the BT adapter is in a bad state. All calls go through the btctl()
+#   wrapper which adds a 5-second timeout.
+#
+# PROBLEM 4: set -e + grep/conditional gotchas
+#   grep returns exit 1 on no match, which kills the script under set -e.
+#   Any grep that might legitimately find nothing needs `|| true`.
+#   Similarly `[[ condition ]] && action` returns 1 when condition is false,
+#   so the debug() function needs `|| true` appended.
+#
+# DIAGNOSIS COMMANDS (for when things go wrong):
+#   bluetoothctl info <MAC>                    # check paired/connected/trusted
+#   cat /proc/bus/input/devices | grep Corne   # check if HID input registered
+#   journalctl -u bluetooth -n 30              # check bluetoothd errors
+#   sudo dmesg | grep -i "bluetooth\|hid"      # check kernel HID registration
+#   ls /sys/bus/hid/devices/                    # 0005:* = BT, 0003:* = USB
+#   sudo cat /var/lib/bluetooth/<adapter>/cache/<MAC>  # view GATT cache
+
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
+readonly SCRIPT_NAME
+
+# >>> CHANGE THIS MAC for each machine/ZMK profile slot <<<
+# Find it with: bt-corne --scan (or bluetoothctl scan on)
+readonly MAC="D8:EE:17:4A:F1:7E"
+readonly DEVICE_NAME="Corne"
+readonly MAX_RETRIES=5
+readonly RETRY_DELAY=3
+
+# Colors
+red=$'\e[31m'
+green=$'\e[32m'
+yellow=$'\e[33m'
+cyan=$'\e[36m'
+reset=$'\e[0m'
+
+VERBOSE=false
+FRESH=false
+SCAN=false
+STATUS=false
+
+usage() {
+  cat <<EOF
+Usage: ${SCRIPT_NAME} [OPTIONS]
+
+Connect to ${DEVICE_NAME} keyboard (${MAC}).
+
+Options:
+    -h, --help      Show this help message
+    -v, --verbose   Enable verbose output
+    -s, --status    Show connection status and exit
+    -f, --fresh     Remove device and re-pair from scratch
+    --scan          Scan for nearby BLE devices (useful to find MAC)
+
+Examples:
+    ${SCRIPT_NAME}              # Connect (or reconnect)
+    ${SCRIPT_NAME} --status     # Check if connected
+    ${SCRIPT_NAME} --fresh      # Nuclear option: full remove + re-pair
+    ${SCRIPT_NAME} --scan       # Discover nearby Bluetooth devices
+EOF
+}
+
+log() { echo "${cyan}[bt-corne]${reset} $*" >&2; }
+success() { echo "${green}[bt-corne]${reset} $*" >&2; }
+warn() { echo "${yellow}[bt-corne]${reset} $*" >&2; }
+error() {
+  echo "${red}[bt-corne]${reset} ERROR: $*" >&2
+  exit 1
+}
+debug() { [[ "$VERBOSE" == true ]] && echo "${cyan}[bt-corne]${reset} (debug) $*" >&2 || true; }
+
+btctl() {
+  # Wrapper to prevent bluetoothctl from hanging without a TTY.
+  # bluetoothctl can block indefinitely on info/show/connect when the
+  # adapter is in a bad state or there's no interactive terminal.
+  timeout 5 bluetoothctl "$@"
+}
+
+is_connected() {
+  btctl info "$MAC" 2>/dev/null | grep -q "Connected: yes"
+}
+
+is_paired() {
+  btctl info "$MAC" 2>/dev/null | grep -q "Paired: yes"
+}
+
+is_trusted() {
+  btctl info "$MAC" 2>/dev/null | grep -q "Trusted: yes"
+}
+
+ensure_power() {
+  local powered
+  powered=$(btctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
+  if [[ "$powered" != "yes" ]]; then
+    log "Powering on Bluetooth adapter..."
+    btctl power on >/dev/null 2>&1
+    sleep 1
+  fi
+  debug "Adapter powered on"
+}
+
+show_status() {
+  ensure_power
+  echo ""
+  if ! btctl info "$MAC" >/dev/null 2>&1; then
+    echo "  Device:     ${DEVICE_NAME} (${MAC})"
+    echo "  Known:      ${red}no${reset}"
+    echo ""
+    return
+  fi
+
+  local info
+  info=$(btctl info "$MAC" 2>/dev/null)
+
+  local paired connected trusted
+  paired=$(echo "$info" | grep "Paired:" | awk '{print $2}')
+  connected=$(echo "$info" | grep "Connected:" | awk '{print $2}')
+  trusted=$(echo "$info" | grep "Trusted:" | awk '{print $2}')
+
+  echo "  Device:     ${DEVICE_NAME} (${MAC})"
+  echo "  Paired:     ${paired}"
+  echo "  Trusted:    ${trusted}"
+
+  if [[ "$connected" == "yes" ]]; then
+    echo "  Connected:  ${green}yes${reset}"
+  else
+    echo "  Connected:  ${red}no${reset}"
+  fi
+
+  # Show battery if available
+  local battery
+  battery=$(echo "$info" | grep "Battery Percentage" | grep -oP '0x[0-9a-f]+' | head -1 || true)
+  if [[ -n "$battery" ]]; then
+    echo "  Battery:    $((16#${battery#0x}))%"
+  fi
+  echo ""
+}
+
+do_scan() {
+  ensure_power
+  log "Scanning for Bluetooth devices (15 seconds)..."
+  log "Put your keyboard in pairing mode now (BT_CLR on the desired profile)"
+  echo ""
+  bluetoothctl --timeout 15 scan on 2>/dev/null | grep -i "NEW\|CHG.*Name" || true
+  echo ""
+  log "Known devices:"
+  btctl devices 2>/dev/null
+}
+
+try_connect() {
+  local attempt
+  for attempt in $(seq 1 "$MAX_RETRIES"); do
+    log "Connection attempt ${attempt}/${MAX_RETRIES}..."
+    timeout 10 bluetoothctl connect "$MAC" >/dev/null 2>&1 || true
+    sleep 2
+
+    if is_connected; then
+      return 0
+    fi
+
+    if [[ "$attempt" -lt "$MAX_RETRIES" ]]; then
+      debug "Failed, waiting ${RETRY_DELAY}s before retry..."
+      sleep "$RETRY_DELAY"
+    fi
+  done
+  return 1
+}
+
+fresh_pair() {
+  # bluetoothctl can't register a D-Bus agent outside an interactive TTY
+  # (see PROBLEM 2 above), so fresh pairing delegates to the Python D-Bus
+  # helper script bt-corne-pair which keeps a proper agent alive.
+  local pair_script
+  pair_script="$(dirname "${BASH_SOURCE[0]}")/bt-corne-pair"
+
+  if [[ ! -x "$pair_script" ]]; then
+    error "Pairing helper not found: $pair_script"
+  fi
+
+  # Nuke the GATT cache to prevent stale attribute handle errors (PROBLEM 1).
+  # The cache must be deleted while bluetoothd is stopped, otherwise it gets
+  # rewritten immediately. The cache path is:
+  #   /var/lib/bluetooth/<adapter-mac>/cache/<device-mac>
+  # The adapter MAC is read from `bluetoothctl show` (first line).
+  local cache
+  cache="/var/lib/bluetooth/$(btctl show 2>/dev/null | head -1 | awk '{print $2}')/cache/${MAC}"
+  if sudo test -f "$cache"; then
+    log "Clearing stale GATT cache..."
+    sudo systemctl stop bluetooth
+    sudo rm -f "$cache"
+    sudo systemctl start bluetooth
+    sleep 3
+  fi
+
+  # bt-corne-pair runs as regular user (no sudo needed for D-Bus agent).
+  # Must use /usr/bin/python3 explicitly because mise/pyenv python won't
+  # have the system python3-dbus C bindings.
+  /usr/bin/python3 "$pair_script"
+}
+
+connect() {
+  ensure_power
+
+  # Already connected?
+  if is_connected; then
+    success "Already connected to ${DEVICE_NAME}"
+    return 0
+  fi
+
+  # Device known and paired? Just try connecting.
+  if is_paired; then
+    # Ensure trusted for auto-reconnect
+    if ! is_trusted; then
+      log "Trusting device for auto-reconnect..."
+      btctl trust "$MAC" >/dev/null 2>&1
+      sleep 1
+    fi
+
+    log "Connecting to ${DEVICE_NAME}..."
+    if try_connect; then
+      success "Connected to ${DEVICE_NAME}!"
+      return 0
+    fi
+
+    # Connection failed despite being paired - bond may be stale
+    warn "Connection failed. Bond may be stale."
+    warn "Attempting restart of bluetooth service and retry..."
+    sudo systemctl restart bluetooth 2>/dev/null || true
+    sleep 3
+    ensure_power
+    sleep 1
+
+    if try_connect; then
+      success "Connected to ${DEVICE_NAME} after service restart!"
+      return 0
+    fi
+
+    warn "Still failing. Try running with --fresh to re-pair."
+    return 1
+  fi
+
+  # Not paired at all - need to scan and pair
+  warn "Device not paired. Starting scan and pair..."
+  fresh_pair
+}
+
+main() {
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -v | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -s | --status)
+      STATUS=true
+      shift
+      ;;
+    -f | --fresh)
+      FRESH=true
+      shift
+      ;;
+    --scan)
+      SCAN=true
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*) error "Unknown option: $1" ;;
+    *) error "Unexpected argument: $1" ;;
+    esac
+  done
+
+  # Check dependencies
+  command -v bluetoothctl &>/dev/null || error "bluetoothctl not found. Install bluez."
+
+  if [[ "$STATUS" == true ]]; then
+    show_status
+    exit 0
+  fi
+
+  if [[ "$SCAN" == true ]]; then
+    do_scan
+    exit 0
+  fi
+
+  if [[ "$FRESH" == true ]]; then
+    ensure_power
+    fresh_pair
+    exit 0
+  fi
+
+  connect
+}
+
+main "$@"

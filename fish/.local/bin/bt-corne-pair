@@ -1,0 +1,209 @@
+#!/usr/bin/python3
+"""
+Pair with Corne keyboard using BlueZ D-Bus API with a proper agent.
+
+WHY THIS EXISTS (instead of using bluetoothctl):
+  bluetoothctl's `agent` and `default-agent` commands only work inside an
+  interactive session with a real TTY attached. When invoked from scripts
+  (pipes, heredocs, subprocesses), agent registration silently fails and
+  pairing fails with "No agent available for request type 2". This script
+  registers a NoInputNoOutput agent directly on the D-Bus system bus,
+  keeping it alive for the full pair -> trust -> connect flow.
+
+MUST RUN WITH SYSTEM PYTHON (/usr/bin/python3):
+  The python3-dbus package installs C extension modules compiled against the
+  system Python (e.g. _dbus_bindings.cpython-312-x86_64-linux-gnu.so).
+  If you use mise/pyenv/asdf, your default python3 will be a different
+  version and `import dbus` will fail with ModuleNotFoundError. We force
+  sys.path to include the system dist-packages to work around this.
+
+DOES NOT NEED SUDO:
+  Regular users can register BlueZ agents on the D-Bus system bus.
+  The polkit/D-Bus policy for BlueZ allows this by default.
+
+ADAPTATION FOR A NEW MACHINE:
+  Change MAC below to match the keyboard's BT address on the new machine.
+  Find it with: bluetoothctl scan on
+  Each ZMK BT profile slot has a different random MAC address.
+"""
+
+import signal
+import sys
+import time
+
+# Force system python's dbus module path (see docstring above)
+sys.path.insert(0, "/usr/lib/python3/dist-packages")
+import dbus
+import dbus.mainloop.glib
+import dbus.service
+
+# >>> CHANGE THIS MAC for each machine/ZMK profile slot <<<
+MAC = "D8:EE:17:4A:F1:7E"
+
+AGENT_PATH = "/test/agent"
+ADAPTER_PATH = "/org/bluez/hci0"
+# BlueZ D-Bus device paths replace : with _ and prefix with dev_
+DEVICE_PATH = f"/org/bluez/hci0/dev_{MAC.replace(':', '_')}"
+BLUEZ = "org.bluez"
+
+
+class NoInputNoOutputAgent(dbus.service.Object):
+    """BLE agent that auto-accepts pairing (NoInputNoOutput / Just Works).
+
+    ZMK keyboards use BLE "Just Works" pairing which requires an agent to
+    auto-confirm. The agent capability "NoInputNoOutput" tells BlueZ to
+    skip passkey display/entry and just accept. All methods below are
+    D-Bus callbacks that BlueZ invokes during the pairing process.
+    """
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="", out_signature="")
+    def Release(self):
+        print("  Agent released")
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="o", out_signature="s")
+    def RequestPinCode(self, device):
+        print(f"  RequestPinCode for {device}")
+        return "0000"
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="o", out_signature="u")
+    def RequestPasskey(self, device):
+        print(f"  RequestPasskey for {device}")
+        return dbus.UInt32(0)
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="ouq", out_signature="")
+    def DisplayPasskey(self, device, passkey, entered):
+        print(f"  DisplayPasskey: {passkey:06d}")
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="os", out_signature="")
+    def DisplayPinCode(self, device, pincode):
+        print(f"  DisplayPinCode: {pincode}")
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="ou", out_signature="")
+    def RequestConfirmation(self, device, passkey):
+        print(f"  Auto-confirming passkey: {passkey:06d}")
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="o", out_signature="")
+    def RequestAuthorization(self, device):
+        print(f"  Auto-authorizing {device}")
+
+    @dbus.service.method(f"{BLUEZ}.Agent1", in_signature="", out_signature="")
+    def Cancel(self):
+        print("  Pairing cancelled")
+
+
+def log(msg):
+    print(f"\033[36m[bt-corne-pair]\033[0m {msg}")
+
+
+def success(msg):
+    print(f"\033[32m[bt-corne-pair]\033[0m {msg}")
+
+
+def error(msg):
+    print(f"\033[31m[bt-corne-pair]\033[0m ERROR: {msg}", file=sys.stderr)
+    sys.exit(1)
+
+
+def main():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    bus = dbus.SystemBus()
+
+    log("Registering NoInputNoOutput agent...")
+    agent = NoInputNoOutputAgent(bus, AGENT_PATH)
+
+    agent_mgr = dbus.Interface(
+        bus.get_object(BLUEZ, "/org/bluez"), f"{BLUEZ}.AgentManager1"
+    )
+    agent_mgr.RegisterAgent(AGENT_PATH, "NoInputNoOutput")
+    agent_mgr.RequestDefaultAgent(AGENT_PATH)
+    log("Agent registered")
+
+    # Power on adapter
+    adapter = dbus.Interface(
+        bus.get_object(BLUEZ, ADAPTER_PATH), "org.freedesktop.DBus.Properties"
+    )
+    if not adapter.Get(f"{BLUEZ}.Adapter1", "Powered"):
+        log("Powering on adapter...")
+        adapter.Set(f"{BLUEZ}.Adapter1", "Powered", dbus.Boolean(True))
+        time.sleep(1)
+
+    # Remove device if it exists (clean slate)
+    try:
+        adapter_iface = dbus.Interface(
+            bus.get_object(BLUEZ, ADAPTER_PATH), f"{BLUEZ}.Adapter1"
+        )
+        adapter_iface.RemoveDevice(DEVICE_PATH)
+        log("Removed existing device")
+        time.sleep(1)
+    except dbus.exceptions.DBusException:
+        pass
+
+    # Start scanning — filter to BLE only (ZMK keyboards are BLE, not classic BT)
+    log("Scanning for Corne (20 seconds)...")
+    log("Make sure keyboard is awake and on the correct BT profile")
+    adapter_iface = dbus.Interface(
+        bus.get_object(BLUEZ, ADAPTER_PATH), f"{BLUEZ}.Adapter1"
+    )
+    adapter_iface.SetDiscoveryFilter({"Transport": dbus.String("le")})
+    adapter_iface.StartDiscovery()
+    time.sleep(20)
+    adapter_iface.StopDiscovery()
+
+    # Check if device was found
+    try:
+        device_obj = bus.get_object(BLUEZ, DEVICE_PATH)
+        device_props = dbus.Interface(device_obj, "org.freedesktop.DBus.Properties")
+        name = device_props.Get(f"{BLUEZ}.Device1", "Name")
+        log(f"Found: {name}")
+    except dbus.exceptions.DBusException:
+        error(f"Device {MAC} not found during scan. Is the keyboard advertising?")
+
+    device = dbus.Interface(device_obj, f"{BLUEZ}.Device1")
+
+    # Pair
+    log("Pairing...")
+    try:
+        device.Pair()
+        log("Paired successfully")
+    except dbus.exceptions.DBusException as e:
+        if "AlreadyExists" in str(e):
+            log("Already paired")
+        else:
+            error(f"Pairing failed: {e}")
+
+    time.sleep(2)
+
+    # Trust
+    log("Trusting device...")
+    device_props.Set(f"{BLUEZ}.Device1", "Trusted", dbus.Boolean(True))
+
+    # Connect
+    log("Connecting...")
+    for attempt in range(1, 6):
+        try:
+            log(f"  Attempt {attempt}/5...")
+            device.Connect()
+            time.sleep(3)
+            connected = device_props.Get(f"{BLUEZ}.Device1", "Connected")
+            if connected:
+                success("Connected to Corne!")
+
+                # Keep agent alive after connect — BlueZ needs the agent
+                # present while it sets up HOGP (HID over GATT Profile).
+                # If the agent exits too early, the HID report descriptor
+                # reads can fail and the keyboard won't register as an
+                # input device.
+                log("Holding agent alive for 5 seconds (for HOGP setup)...")
+                time.sleep(5)
+                agent_mgr.UnregisterAgent(AGENT_PATH)
+                return
+        except dbus.exceptions.DBusException as e:
+            log(f"  Attempt {attempt} failed: {e}")
+            time.sleep(3)
+
+    error("Failed to connect after 5 attempts")
+
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, lambda *_: sys.exit(1))
+    main()

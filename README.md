@@ -122,6 +122,7 @@ Setup scripts receive these environment variables:
   - fzf binary installation and fzf.fish integration
   - Custom functions and aliases
   - HashiCorp Vault integration with auto-renewal utility (`vault-renew`)
+  - Bluetooth Corne keyboard connection scripts (`bt-corne`, `bt-corne-pair`) with retry logic and D-Bus agent for BLE pairing
 - **tmux** - Terminal multiplexer configuration with:
   - Custom key bindings
   - Status bar customization
