@@ -53,6 +53,7 @@ Closes #42
 - After committing, ASK the user before pushing or creating a PR
 - Never stage files containing secrets (.env, credentials, API keys)
 - Never stage or commit CLAUDE.md files
+- When new tests reveal source code bugs, stage both the fix and the tests in a single commit
 
 ## Heredoc format
 
