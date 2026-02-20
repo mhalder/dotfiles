@@ -15,62 +15,36 @@ Enforce consistent YAML frontmatter on all markdown notes in Obsidian vaults.
 ```yaml
 ---
 id: unique-identifier
-type: <type>
 tags:
   - tag1
   - tag2
-created: YYYY-MM-DD
 ---
 ```
 
 ### Optional Fields
 
 ```yaml
-modified: YYYY-MM-DD
-status: seedling | growing | evergreen | active | completed
 aliases:
   - alternative-name
 source: https://...
 author: Author Name
 ```
 
-## Valid `type` Values
+## Organization: Hubs over Tags
 
-| Type       | Usage                                              |
-| ---------- | -------------------------------------------------- |
-| `inbox`    | Quick captures, fleeting notes                     |
-| `daily`    | Daily journal entries                              |
-| `project`  | Active project notes                               |
-| `area`     | Ongoing responsibility notes                       |
-| `resource` | Reference material, tools, guides, knowledge notes |
-| `archive`  | Completed/outdated material                        |
-| `moc`      | Maps of Content                                    |
-| `book`     | Book notes and highlights                          |
-| `snippet`  | Code snippets and examples                         |
-| `decision` | Decision records with context and options          |
-| `idea`     | Ideas and seeds for future exploration             |
-| `meeting`  | Meeting notes with attendees and actions           |
-| `person`   | People notes and contacts                          |
-| `research` | Research notes with questions and findings         |
+- **Hubs (MOC notes)** are the primary navigation tool — create a hub note for any topic with 3+ notes
+- **Tags** are flat and minimal — used for search and lightweight categorization, not hierarchy
+- Hubs can link to other hubs for natural hierarchy without needing folder nesting or hierarchical tags
 
 ## Rules
 
-1. **Always include frontmatter** — every note must have `id`, `type`, `tags`, `created`
-2. **`id` must be stable** — never change it after creation. Format: `YYYYMMDDHHmm-slug` for most notes, `YYYY-MM-DD` for daily notes
-3. **`type` must be from the valid set** — never invent new type values
-4. **`status` must be from the valid set** — `seedling`, `growing`, `evergreen`, `active`, `completed`
-5. **Date format: `YYYY-MM-DD`** — ISO 8601, no exceptions
-6. **Use hierarchical tags** — `tool/obsidian`, `cloud/aws`, `project/active`
-7. **No spaces in tag names** — use hyphens (`knowledge-management`) or slashes (`tool/obsidian`)
-8. **2-5 tags per note** — if you need more, consider splitting the note
-9. **Use `source` (singular)** for reference material — always capture where information came from
-10. **Use `aliases`** for discoverability — abbreviations, acronyms, alternate names
-
-## Field Distinctions
-
-- **`id`** is custom — Obsidian ignores it. Used for Dataview queries, scripts, stable references that survive renames.
-- **`aliases`** is Obsidian-native — values appear in `[[` autocomplete, search, and graph view.
-- **Frontmatter tags** (YAML list) are preferred for structured queries. Inline `#tags` are fine for situational markers.
+1. **Always include frontmatter** — every note must have `id` and `tags`
+2. **`id` must be stable** — never change it after creation. Format: `YYYYMMDDHHmm-slug` or `timestamp-slug`
+3. **Use flat tags** — `neovim`, `cli`, `aws` (not `tool/neovim` or `cloud/aws`)
+4. **No spaces in tag names** — use hyphens (`knowledge-management`)
+5. **2-5 tags per note** — if you need more, consider splitting the note
+6. **Use `aliases` only when they add value** — alternate names, acronyms, abbreviations that differ from the filename. Do not duplicate the filename slug as an alias.
+7. **Use `source` (singular)** for reference material — capture where information came from
 
 ## Common Pitfalls to Avoid
 
@@ -78,5 +52,4 @@ author: Author Name
 - Tabs instead of spaces — YAML requires spaces
 - Unquoted special characters — values with `:`, `#`, `[`, `{` need quoting
 - Duplicate keys — YAML silently uses the last value
-- Using `sources` (plural) instead of `source` (singular)
-- Using status values not in the valid set (e.g., `seed` instead of `seedling`, `pending` instead of `active`)
+- Content (headings, todos) inside the frontmatter block — only valid YAML between `---` delimiters
