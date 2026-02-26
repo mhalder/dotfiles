@@ -5,6 +5,7 @@
 "github:sinclairtarget/git-who" = "latest"
 "github:vmware/govmomi" = "latest"
 "npm:@cyclonedx/cdxgen" = "latest"
+"npm:agent-browser" = "latest"
 "pipx:black" = "latest"
 age = "latest"
 biome = "latest"
