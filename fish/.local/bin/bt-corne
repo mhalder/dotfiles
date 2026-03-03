@@ -74,10 +74,10 @@ IFS=$'\n\t'
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 readonly SCRIPT_NAME
 
-# >>> CHANGE THIS MAC for each machine/ZMK profile slot <<<
-# Find it with: bt-corne --scan (or bluetoothctl scan on)
-readonly MAC="D8:EE:17:4A:F1:7E"
-readonly DEVICE_NAME="Corne"
+# MAC addresses per keyboard variant (find with: bt-corne --scan)
+readonly MAC_CHOC="D8:EE:17:4A:F1:7E"
+readonly MAC_MX="D5:5C:73:A8:C3:4D"
+
 readonly MAX_RETRIES=5
 readonly RETRY_DELAY=3
 
@@ -92,12 +92,18 @@ VERBOSE=false
 FRESH=false
 SCAN=false
 STATUS=false
+MAC=""
+DEVICE_NAME=""
 
 usage() {
   cat <<EOF
-Usage: ${SCRIPT_NAME} [OPTIONS]
+Usage: ${SCRIPT_NAME} --choc|--mx [OPTIONS]
 
-Connect to ${DEVICE_NAME} keyboard (${MAC}).
+Connect to a Corne split keyboard via BLE.
+
+Keyboard variant (required):
+    --choc          Corne Choc (${MAC_CHOC})
+    --mx            Corne MX   (${MAC_MX})
 
 Options:
     -h, --help      Show this help message
@@ -107,10 +113,10 @@ Options:
     --scan          Scan for nearby BLE devices (useful to find MAC)
 
 Examples:
-    ${SCRIPT_NAME}              # Connect (or reconnect)
-    ${SCRIPT_NAME} --status     # Check if connected
-    ${SCRIPT_NAME} --fresh      # Nuclear option: full remove + re-pair
-    ${SCRIPT_NAME} --scan       # Discover nearby Bluetooth devices
+    ${SCRIPT_NAME} --choc              # Connect to Choc
+    ${SCRIPT_NAME} --mx --status       # Check MX connection status
+    ${SCRIPT_NAME} --choc --fresh      # Nuclear re-pair for Choc
+    ${SCRIPT_NAME} --scan              # Discover nearby Bluetooth devices
 EOF
 }
 
@@ -249,7 +255,7 @@ fresh_pair() {
   # bt-corne-pair runs as regular user (no sudo needed for D-Bus agent).
   # Must use /usr/bin/python3 explicitly because mise/pyenv python won't
   # have the system python3-dbus C bindings.
-  /usr/bin/python3 "$pair_script"
+  /usr/bin/python3 "$pair_script" "$MAC"
 }
 
 connect() {
@@ -317,6 +323,16 @@ main() {
       FRESH=true
       shift
       ;;
+    --choc)
+      MAC="$MAC_CHOC"
+      DEVICE_NAME="Corne Choc"
+      shift
+      ;;
+    --mx)
+      MAC="$MAC_MX"
+      DEVICE_NAME="Corne MX"
+      shift
+      ;;
     --scan)
       SCAN=true
       shift
@@ -333,13 +349,22 @@ main() {
   # Check dependencies
   command -v bluetoothctl &>/dev/null || error "bluetoothctl not found. Install bluez."
 
-  if [[ "$STATUS" == true ]]; then
-    show_status
+  if [[ "$SCAN" == true ]]; then
+    do_scan
     exit 0
   fi
 
-  if [[ "$SCAN" == true ]]; then
-    do_scan
+  # Variant is required for all commands except --scan
+  if [[ -z "$MAC" ]]; then
+    error "Specify a keyboard variant: --choc or --mx"
+  fi
+
+  if [[ "$MAC" == "FILL_ME_IN" ]]; then
+    error "MAC for this variant is not configured yet. Run: bt-corne --scan"
+  fi
+
+  if [[ "$STATUS" == true ]]; then
+    show_status
     exit 0
   fi
 

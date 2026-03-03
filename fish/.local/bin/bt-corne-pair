@@ -25,6 +25,10 @@ ADAPTATION FOR A NEW MACHINE:
   Change MAC below to match the keyboard's BT address on the new machine.
   Find it with: bluetoothctl scan on
   Each ZMK BT profile slot has a different random MAC address.
+
+USAGE:
+  bt-corne-pair <MAC>
+  Called automatically by bt-corne --fresh; not usually invoked directly.
 """
 
 import signal
@@ -37,8 +41,11 @@ import dbus
 import dbus.mainloop.glib
 import dbus.service
 
-# >>> CHANGE THIS MAC for each machine/ZMK profile slot <<<
-MAC = "D8:EE:17:4A:F1:7E"
+if len(sys.argv) != 2 or sys.argv[1].count(":") != 5:
+    print(f"Usage: {sys.argv[0]} <MAC>", file=sys.stderr)
+    sys.exit(1)
+
+MAC = sys.argv[1]
 
 AGENT_PATH = "/test/agent"
 ADAPTER_PATH = "/org/bluez/hci0"

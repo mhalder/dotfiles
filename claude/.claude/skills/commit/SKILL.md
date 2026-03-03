@@ -50,7 +50,7 @@ Closes #42
 - Never use `git push` unless explicitly requested
 - Never push directly to main/master; always use a feature branch and PR
 - Never create a PR without explicit user approval
-- After committing, ASK the user before pushing or creating a PR
+- After committing, ALWAYS ASK the user before pushing or creating a PR/MR. Never push or create MRs automatically, even if the workflow seems obvious.
 - Never stage files containing secrets (.env, credentials, API keys)
 - Never stage or commit CLAUDE.md files
 - When new tests reveal source code bugs, stage both the fix and the tests in a single commit
