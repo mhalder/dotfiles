@@ -34,6 +34,7 @@ if status is-interactive
     # podman
     abbr -a drc 'podman rm -f (podman ps -a -q)'
     abbr -a dri 'podman rmi -f (podman images -q)'
+    abbr -a drv 'podman volume rm -f (podman volume ls -q)'
     abbr -a pd 'flatpak run io.podman_desktop.PodmanDesktop'
     if not test -f ~/.config/fish/completions/podman.fish
         podman completion fish > ~/.config/fish/completions/podman.fish
