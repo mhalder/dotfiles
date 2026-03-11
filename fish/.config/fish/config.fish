@@ -89,3 +89,6 @@ else
     end
     fnox activate fish | source
 end
+
+# opencode
+fish_add_path /home/halderm/.opencode/bin

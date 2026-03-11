@@ -158,6 +158,7 @@ Setup scripts receive these environment variables:
   - Custom agents for specialized tasks (architect, cloud, kubernetes, testing, documentation)
   - Skills for common workflows (commit, review-pr, ansible, terraform, obsidian-frontmatter, etc.)
   - Hooks for automated suggestions and workflow improvements
+- **opencode** - OpenCode AI coding assistant TUI configuration with custom keybindings
 
 ### System Tools
 

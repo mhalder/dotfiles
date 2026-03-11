@@ -3,6 +3,7 @@
 "github:itaysk/kubectl-neat" = "latest"
 "github:ramonvermeulen/whosthere" = "latest"
 "github:sinclairtarget/git-who" = "latest"
+"npm:skills" = "latest"
 "github:vmware/govmomi" = "latest"
 "npm:@cyclonedx/cdxgen" = "latest"
 "npm:@googleworkspace/cli" = "latest"
