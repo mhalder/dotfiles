@@ -1,10 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Helper functions
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 log "Setting up tmux plugins directory..."
 mkdir -p ~/.config/tmux/plugins
@@ -37,4 +34,4 @@ else
   log "Warning: TPM install_plugins script not found"
 fi
 
-log "Tmux setup completed successfully!"
+log "tmux setup completed!"

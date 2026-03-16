@@ -1,17 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 MISE_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/mise"
 FISH_COMPLETIONS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/fish/completions"
 
 # Check if mise is installed
 if ! command -v mise &>/dev/null; then
-  log "Error: mise is not installed. Install it first:"
-  log "  curl https://mise.run | sh"
+  log "Error: mise is not installed"
   exit 1
 fi
 
@@ -45,4 +42,4 @@ mise reshim
 log "Installed tools:"
 mise list --current 2>/dev/null | head -20 || true
 
-log "Mise setup completed successfully!"
+log "mise setup completed!"

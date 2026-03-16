@@ -1,17 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 VAULT_TOKEN_FILE="$HOME/.vault-token"
 FISH_COMPLETIONS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/fish/completions"
 
 # Check if fnox is installed
 if ! command -v fnox &>/dev/null; then
-  log "Error: fnox is not installed. Install it via mise:"
-  log "  mise install fnox"
+  log "Error: fnox is not installed"
   exit 1
 fi
 
@@ -52,6 +49,6 @@ if command -v fish &>/dev/null; then
   fi
 fi
 
-log "Fnox setup completed!"
+log "fnox setup completed!"
 log "  Config: ${XDG_CONFIG_HOME:-$HOME/.config}/fnox/config.toml"
 log "  Token:  $VAULT_TOKEN_FILE"

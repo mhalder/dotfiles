@@ -1,14 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 log "Setting up sesh..."
 
 if ! command -v go &>/dev/null; then
-  log "Error: Go is not installed. Please install Go first."
+  log "Error: go is not installed"
   exit 1
 fi
 
@@ -26,4 +24,4 @@ else
   fi
 fi
 
-log "Sesh setup completed successfully!"
+log "sesh setup completed!"

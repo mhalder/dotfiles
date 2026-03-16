@@ -166,8 +166,9 @@ Setup scripts receive these environment variables:
 - **dunst** - Lightweight notification daemon configuration with custom styling
 - **i3** - Tiling window manager configuration including:
   - Custom key bindings
-  - Workspace management
+  - Workspace management with gaps
   - i3status bar configuration
+  - Picom compositor for transparency and blur
   - Application-specific rules
 - **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, zoxide integration, and archive previews via ouch
 - **k9s** - Kubernetes CLI tool configuration for cluster management
@@ -188,13 +189,20 @@ For the complete list of installed tools and system dependencies, see the [Insta
 
 ## Package Setup Scripts
 
-Several packages include automated setup scripts that run after symlinking:
+All packages include `setup.sh` and `teardown.sh` scripts that run during install and uninstall:
 
-### Packages with Setup Scripts
+- Simple packages verify the tool is installed and exit
+- Complex packages handle additional setup (e.g., plugin installation, completions, dependencies)
+
+Notable setup scripts:
 
 - **fish** - Installs fzf binary, Fisher plugin manager, and syncs fish plugins
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
 - **sesh** - Installs sesh binary via go install
+- **mise** - Installs all configured runtimes and CLI tools, generates fish completions
+- **fnox** - Configures Vault token and generates fish completions
+- **jj** - Generates fish completions
+- **i3** - Installs system dependencies (brightnessctl, i3lock-fancy, picom)
 - **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, and system dependencies
 
 These scripts are automatically executed by stau during package installation.

@@ -1,9 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 MISE_DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/mise"
 MISE_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/mise"
@@ -24,7 +22,7 @@ fi
 if [ -d "$MISE_CACHE_DIR" ]; then
   log "Removing mise cache directory..."
   rm -rf "$MISE_CACHE_DIR"
-  log "Mise cache removed"
+  log "mise cache removed"
 else
   log "Mise cache directory not found, skipping"
 fi
@@ -41,6 +39,6 @@ fi
 #   log "Mise data directory not found, skipping"
 # fi
 
-log "Mise teardown completed!"
+log "mise teardown completed!"
 log "Note: Installed tools in $MISE_DATA_DIR were preserved."
 log "      To remove them, uncomment the relevant section in this script."

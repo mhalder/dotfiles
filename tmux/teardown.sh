@@ -1,10 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# Helper functions
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 log "Tearing down tmux plugins..."
 
@@ -16,4 +13,4 @@ else
   log "~/.config/tmux/plugins does not exist, skipping"
 fi
 
-log "Tmux teardown completed successfully!"
+log "tmux teardown completed!"

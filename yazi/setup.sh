@@ -1,9 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"
-}
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 log "Installing yazi dependencies..."
 
@@ -43,4 +41,4 @@ else
   log "  ya pkg add BennyOe/tokyo-night"
 fi
 
-log "Yazi dependencies installed successfully!"
+log "yazi setup completed!"

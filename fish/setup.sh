@@ -27,4 +27,4 @@ else
   fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update' || exit 1
 fi
 
-log "Done."
+log "fish setup completed!"
