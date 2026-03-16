@@ -146,7 +146,8 @@ bindsym $mod+r mode "resize"
 bar {
     status_command i3status
     position top
-    font pango:Cascadia Code, Regular 16
+    font pango:Cascadia Code 16
+    height 30
 }
 
 # make the currently focused window a scratchpad

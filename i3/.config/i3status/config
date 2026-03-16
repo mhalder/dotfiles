@@ -2,10 +2,13 @@ general {
   output_format = "i3bar"
   colors = true
   interval = 3
+  color_good = "#50fa7b"
+  color_degraded = "#f1fa8c"
+  color_bad = "#ff5555"
 }
 
 order += "cpu_usage"
-order += "load"
+order += "memory"
 order += "disk /"
 order += "ethernet _first_"
 order += "wireless _first_"
@@ -14,19 +17,29 @@ order += "battery 0"
 
 cpu_usage {
   format = "☢ %usage"
+  degraded_threshold = 60
+  max_threshold = 90
+}
+
+memory {
+  format = "🐏 %used"
+  threshold_degraded = "2G"
+  threshold_critical = "1G"
 }
 
 load {
-  format = "♻ %5min"
+  format = "♻ %1min"
 }
 
 disk "/" {
-  format = "💾 %free free"
+  format = "💾 %avail"
+  low_threshold = 10
+  threshold_type = "percentage_avail"
 }
 
 ethernet _first_ {
-  format_up = "🛡 %ip"
-  format_down = "🛡 down"
+  format_up = "🔌 %ip"
+  format_down = "🔌 down"
 }
 
 wireless _first_ {
@@ -35,11 +48,19 @@ wireless _first_ {
 }
 
 tztime local {
-  format = "📅 %d.%m.%Y | 🕒 %H:%M"
+  format = "📅 %d.%m.%Y | ⏰ %H:%M:%S"
 }
 
 battery 0 {
-  format = "🔋 %status %percentage %remaining"
+  format = "%status %percentage"
   format_down = "🔋 No battery"
   path = "/sys/class/power_supply/BAT0/uevent"
+  integer_battery_capacity = true
+  last_full_capacity = true
+  status_chr = "⚡"
+  status_bat = "🔋"
+  status_full = "⚡"
+  status_unk = "⚡"
+  low_threshold = 20
+  threshold_type = percentage
 }
