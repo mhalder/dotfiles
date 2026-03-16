@@ -34,10 +34,12 @@ Analyze a project's codebase and update its README.md to accurately reflect the 
 - Never add sections that weren't requested
 - Never remove sections without explicit approval
 - Never fabricate features not found in the codebase
+- MUST NOT include "Project Structure" sections with directory trees — they go stale quickly
 
 ## Output
 
 After updating, summarize:
+
 - Sections updated
 - What was added or removed
 - Anything needing manual review

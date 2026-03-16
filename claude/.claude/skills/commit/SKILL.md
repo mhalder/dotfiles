@@ -13,7 +13,7 @@ Analyze changes and create well-formatted commits using conventional commit form
 1. Run `git status` to see staged, unstaged, and untracked files
 2. Run `git diff --staged` (or `git diff` if nothing staged) to view changes
 3. Run `git log --oneline -5` to match existing commit style
-4. **Run /update-readme skill** to ensure documentation is in sync with changes
+4. **Run /update-readme skill** to ensure documentation is in sync with changes. If only non-code files changed (e.g., docs/requirements.md), verify the README is still current but skip the full skill if no code or structural changes were made.
 5. Stage changes with `git add` if needed (ask user if unclear what to stage)
 6. Create commit with conventional format (see below)
 7. Run `git status` to verify success
@@ -52,8 +52,9 @@ Closes #42
 - Never create a PR without explicit user approval
 - After committing, ALWAYS ASK the user before pushing or creating a PR/MR. Never push or create MRs automatically, even if the workflow seems obvious.
 - Never stage files containing secrets (.env, credentials, API keys)
-- Never stage or commit CLAUDE.md files
+- Never stage or commit CLAUDE.md files or anything under `.claude/`
 - When new tests reveal source code bugs, stage both the fix and the tests in a single commit
+- When committing a large batch of fixes, group related changes into a single commit with a descriptive body listing each fix as a bullet point
 
 ## Heredoc format
 
