@@ -41,6 +41,10 @@ if status is-interactive
         podman completion fish > ~/.config/fish/completions/podman.fish
     end
 
+    # claude
+    abbr -a cl claude
+    abbr -a cv 'claude --add-dir ~/vaults/claude'
+
     # lazygit
     abbr -a lz lazygit
 
