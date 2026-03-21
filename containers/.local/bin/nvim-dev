@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONTAINER_NAME="nvim-dev"
+IMAGE="ubuntu:latest"
+
+DEV_SCRIPT=$(mktemp)
+ROOT_SCRIPT=$(mktemp)
+trap 'rm -f "$DEV_SCRIPT" "$ROOT_SCRIPT"' EXIT
+
+cat >"$DEV_SCRIPT" <<'DEVEOF'
+set -euo pipefail
+
+# Install mise
+curl -sSf https://mise.run | sh
+export PATH="$HOME/.local/bin:$PATH"
+
+# Install tools via mise
+mise use -g neovim@nightly btop eza lazygit yazi
+
+# Clone nvim config
+git clone https://github.com/mhalder/nvim-native.git ~/.config/nvim
+
+# Replace plugins.lua with slim container set
+cat > ~/.config/nvim/lua/plugins.lua << 'PLUGEOF'
+vim.pack.add({
+  { src = "https://github.com/echasnovski/mini.nvim" },
+  { src = "https://github.com/stevearc/quicker.nvim" },
+  { src = "https://github.com/folke/tokyonight.nvim" },
+  { src = "https://github.com/folke/trouble.nvim" },
+  { src = "https://github.com/folke/flash.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/mikavilpas/yazi.nvim" },
+})
+PLUGEOF
+
+# Replace init.lua to only load kept plugins
+cat > ~/.config/nvim/init.lua << 'INITEOF'
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
+require("plugins")
+
+require("trouble-config")
+require("quicker-config")
+require("mini-config")
+require("flash-config")
+require("yazi-config")
+
+require("options")
+require("keymaps")
+require("autocommands")
+
+require("theme")
+INITEOF
+
+# Drop into a shell with mise activated
+exec bash --rcfile <(echo "eval \"\$($HOME/.local/bin/mise activate bash)\"")
+DEVEOF
+
+cat >"$ROOT_SCRIPT" <<'ROOTEOF'
+set -euo pipefail
+
+apt-get update && apt-get install -y --no-install-recommends \
+  curl git unzip sudo ripgrep fd-find file ca-certificates
+
+useradd -m -s /bin/bash dev
+echo "dev ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+cp /tmp/dev-setup.sh /home/dev/setup.sh
+chown dev:dev /home/dev/setup.sh
+exec sudo -iu dev bash /home/dev/setup.sh
+ROOTEOF
+
+podman run -it --rm --name "$CONTAINER_NAME" --hostname "$CONTAINER_NAME" \
+  -v "$DEV_SCRIPT:/tmp/dev-setup.sh:ro" \
+  -v "$ROOT_SCRIPT:/tmp/root-setup.sh:ro" \
+  "$IMAGE" bash /tmp/root-setup.sh
