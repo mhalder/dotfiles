@@ -10,15 +10,13 @@ IFS=$'\n\t'
 # This script was written for a ZMK-based Corne split keyboard over BLE.
 # To adapt it for a different machine:
 #
-# 1. Change MAC below to match your keyboard's BT address on that machine.
-#    Each ZMK BT profile slot advertises a different random MAC address, so
-#    the MAC will differ per profile slot AND per host if you use multiple.
-#    Run `bt-corne --scan` (or `bluetoothctl scan on`) to discover it.
+# 1. Change MAC_CHOC / MAC_MX below to match your keyboard's BT addresses
+#    on that machine. Each ZMK BT profile slot advertises a different random
+#    MAC address, so the MAC will differ per profile slot AND per host.
+#    Run `bt-corne --scan` (or `bluetoothctl scan on`) to discover them.
+#    bt-corne-pair receives the MAC as an argument — no changes needed there.
 #
-# 2. The companion script `bt-corne-pair` (Python, same directory) must also
-#    have its MAC updated to match.
-#
-# 3. Dependencies: bluetoothctl (bluez), python3-dbus (system package).
+# 2. Dependencies: bluetoothctl (bluez), python3-dbus (system package).
 #    If using mise/pyenv/asdf, the system python3 at /usr/bin/python3 is
 #    required because python3-dbus C bindings are compiled against it.
 #    The script forces sys.path to /usr/lib/python3/dist-packages for this.
@@ -109,7 +107,8 @@ Options:
     -h, --help      Show this help message
     -v, --verbose   Enable verbose output
     -s, --status    Show connection status and exit
-    -f, --fresh     Remove device and re-pair from scratch
+    -f, --fresh     Remove device and re-pair from scratch (host side only;
+                    also press BT_CLR on keyboard if bond is stale)
     --scan          Scan for nearby BLE devices (useful to find MAC)
 
 Examples:
@@ -148,6 +147,22 @@ is_trusted() {
   btctl info "$MAC" 2>/dev/null | grep -q "Trusted: yes"
 }
 
+check_adapter() {
+  # Verify the BT adapter is responding. A stuck controller will cause
+  # bluetoothctl to hang or return no output even with the timeout wrapper.
+  # The only fix for a stuck controller is a reboot.
+  local show
+  show=$(btctl show 2>/dev/null) || true
+  if [[ -z "$show" ]]; then
+    error "Bluetooth adapter not responding. Try: sudo systemctl restart bluetooth
+       If that doesn't help, a reboot is needed (stuck controller)."
+  fi
+  if echo "$show" | grep -q "org.bluez.Error"; then
+    error "Bluetooth adapter in error state. A reboot is likely needed."
+  fi
+  debug "Adapter responding"
+}
+
 ensure_power() {
   local powered
   powered=$(btctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
@@ -155,6 +170,11 @@ ensure_power() {
     log "Powering on Bluetooth adapter..."
     btctl power on >/dev/null 2>&1
     sleep 1
+    # Verify power-on actually worked
+    powered=$(btctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
+    if [[ "$powered" != "yes" ]]; then
+      error "Failed to power on Bluetooth adapter. A reboot may be needed."
+    fi
   fi
   debug "Adapter powered on"
 }
@@ -162,15 +182,15 @@ ensure_power() {
 show_status() {
   ensure_power
   echo ""
-  if ! btctl info "$MAC" >/dev/null 2>&1; then
+
+  local info
+  info=$(btctl info "$MAC" 2>/dev/null) || true
+  if [[ -z "$info" ]]; then
     echo "  Device:     ${DEVICE_NAME} (${MAC})"
     echo "  Known:      ${red}no${reset}"
     echo ""
     return
   fi
-
-  local info
-  info=$(btctl info "$MAC" 2>/dev/null)
 
   local paired connected trusted
   paired=$(echo "$info" | grep "Paired:" | awk '{print $2}')
@@ -261,16 +281,20 @@ fresh_pair() {
 connect() {
   ensure_power
 
+  # Cache device info to avoid repeated btctl calls
+  local info
+  info=$(btctl info "$MAC" 2>/dev/null) || true
+
   # Already connected?
-  if is_connected; then
+  if echo "$info" | grep -q "Connected: yes"; then
     success "Already connected to ${DEVICE_NAME}"
     return 0
   fi
 
   # Device known and paired? Just try connecting.
-  if is_paired; then
+  if echo "$info" | grep -q "Paired: yes"; then
     # Ensure trusted for auto-reconnect
-    if ! is_trusted; then
+    if ! echo "$info" | grep -q "Trusted: yes"; then
       log "Trusting device for auto-reconnect..."
       btctl trust "$MAC" >/dev/null 2>&1
       sleep 1
@@ -296,6 +320,8 @@ connect() {
     fi
 
     warn "Still failing. Try running with --fresh to re-pair."
+    warn "NOTE: --fresh only clears the host side. You also need to press"
+    warn "BT_CLR on the keyboard to clear its bond (or flash settings_reset)."
     return 1
   fi
 
@@ -348,6 +374,9 @@ main() {
 
   # Check dependencies
   command -v bluetoothctl &>/dev/null || error "bluetoothctl not found. Install bluez."
+
+  # Verify adapter is alive before doing anything
+  check_adapter
 
   if [[ "$SCAN" == true ]]; then
     do_scan

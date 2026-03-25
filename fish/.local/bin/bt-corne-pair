@@ -21,14 +21,10 @@ DOES NOT NEED SUDO:
   Regular users can register BlueZ agents on the D-Bus system bus.
   The polkit/D-Bus policy for BlueZ allows this by default.
 
-ADAPTATION FOR A NEW MACHINE:
-  Change MAC below to match the keyboard's BT address on the new machine.
-  Find it with: bluetoothctl scan on
-  Each ZMK BT profile slot has a different random MAC address.
-
 USAGE:
   bt-corne-pair <MAC>
   Called automatically by bt-corne --fresh; not usually invoked directly.
+  MAC address is passed as an argument (discovered via bt-corne --scan).
 """
 
 import signal
@@ -99,11 +95,11 @@ class NoInputNoOutputAgent(dbus.service.Object):
 
 
 def log(msg):
-    print(f"\033[36m[bt-corne-pair]\033[0m {msg}")
+    print(f"\033[36m[bt-corne-pair]\033[0m {msg}", file=sys.stderr)
 
 
 def success(msg):
-    print(f"\033[32m[bt-corne-pair]\033[0m {msg}")
+    print(f"\033[32m[bt-corne-pair]\033[0m {msg}", file=sys.stderr)
 
 
 def error(msg):
@@ -146,24 +142,37 @@ def main():
         pass
 
     # Start scanning — filter to BLE only (ZMK keyboards are BLE, not classic BT)
-    log("Scanning for Corne (20 seconds)...")
+    log("Scanning for Corne (up to 20 seconds)...")
     log("Make sure keyboard is awake and on the correct BT profile")
     adapter_iface = dbus.Interface(
         bus.get_object(BLUEZ, ADAPTER_PATH), f"{BLUEZ}.Adapter1"
     )
     adapter_iface.SetDiscoveryFilter({"Transport": dbus.String("le")})
     adapter_iface.StartDiscovery()
-    time.sleep(20)
+
+    # Poll for device appearance instead of sleeping the full 20s.
+    # The D-Bus object can appear before BlueZ populates its properties,
+    # so we also wait for the Name property to be readable.
+    device_obj = None
+    device_props = None
+    name = None
+    for _ in range(40):  # 40 * 0.5s = 20s max
+        try:
+            obj = bus.get_object(BLUEZ, DEVICE_PATH)
+            props = dbus.Interface(obj, "org.freedesktop.DBus.Properties")
+            name = str(props.Get(f"{BLUEZ}.Device1", "Name"))
+            device_obj = obj
+            device_props = props
+            break
+        except dbus.exceptions.DBusException:
+            time.sleep(0.5)
+
     adapter_iface.StopDiscovery()
 
-    # Check if device was found
-    try:
-        device_obj = bus.get_object(BLUEZ, DEVICE_PATH)
-        device_props = dbus.Interface(device_obj, "org.freedesktop.DBus.Properties")
-        name = device_props.Get(f"{BLUEZ}.Device1", "Name")
-        log(f"Found: {name}")
-    except dbus.exceptions.DBusException:
+    if device_obj is None:
         error(f"Device {MAC} not found during scan. Is the keyboard advertising?")
+
+    log(f"Found: {name}")
 
     device = dbus.Interface(device_obj, f"{BLUEZ}.Device1")
 
