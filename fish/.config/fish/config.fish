@@ -1,4 +1,4 @@
-set -gx SSH_AUTH_SOCK $XDG_RUNTIME_DIR/openssh_agent
+set -gx SSH_AUTH_SOCK $XDG_RUNTIME_DIR/gcr/ssh
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
