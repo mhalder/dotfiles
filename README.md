@@ -180,7 +180,7 @@ The automated setup script installs a complete development environment including
 
 - **Base system**: Xorg, LightDM, i3 window manager
 - **Terminal**: Ghostty terminal emulator
-- **Languages**: Rust, Go, Python, Node.js (via nvm)
+- **Languages**: Rust, Go, Python, Node.js (via mise)
 - **Editors**: Neovim with full configuration
 - **Tools**: Git, GitHub CLI, kubectl, cargo tools, npm packages
 - **Utilities**: Ripgrep, fd, btop, and many more

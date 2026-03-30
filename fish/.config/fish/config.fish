@@ -1,4 +1,3 @@
-set -gx SSH_AUTH_SOCK $XDG_RUNTIME_DIR/gcr/ssh
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
@@ -56,15 +55,6 @@ if status is-interactive
 
     # Zoxide
     zoxide init fish | source
-
-    # nvm.fish - set default and auto switch on directory change
-    set -g nvm_default_version 22
-    set --query nvm_current_version || nvm use --silent $nvm_default_version
-    function _nvm_auto_use --on-variable PWD
-        if test -f .nvmrc
-            nvm use --silent
-        end
-    end
 
     # Mise - runtime version manager
     mise activate fish | source
