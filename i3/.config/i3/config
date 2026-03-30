@@ -70,13 +70,12 @@ bindsym $mod+d focus child
 set $ws1 "1 work"
 set $ws2 "2 arkadia"
 set $ws3 "3 private"
-set $ws4 "4 obsidian"
-set $ws5 "5 code"
-set $ws6 "6 tmux"
-set $ws7 "7 remmina"
-set $ws8 "8 slack"
+set $ws4 "4 apps"
+set $ws5 "5 slack"
+set $ws6 "6 sessions"
+set $ws7 "7 vault"
+set $ws8 "8 obsidian"
 set $ws9 "9 music"
-set $ws10 "10 notes"
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -88,7 +87,6 @@ bindsym $mod+6 workspace $ws6
 bindsym $mod+7 workspace $ws7
 bindsym $mod+8 workspace $ws8
 bindsym $mod+9 workspace $ws9
-bindsym $mod+0 workspace $ws10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $ws1
@@ -100,7 +98,6 @@ bindsym $mod+Shift+6 move container to workspace $ws6
 bindsym $mod+Shift+7 move container to workspace $ws7
 bindsym $mod+Shift+8 move container to workspace $ws8
 bindsym $mod+Shift+9 move container to workspace $ws9
-bindsym $mod+Shift+0 move container to workspace $ws10
 
 bindsym $mod+b exec --no-startup-id google-chrome
 bindsym $mod+shift+p exec --no-startup-id pavucontrol
