@@ -11,7 +11,8 @@ dir_length = 2
 blacklist = [
   "node_modules", "^target$", "\\.git", "^vendor$", "^dist$",
   "\\.cache", "__pycache__", "\\.venv", "^venv$", "\\.direnv", "^build$",
-  "^coverage$", "\\.next", "\\.nuxt", "^out$"
+  "^coverage$", "\\.next", "\\.nuxt", "^out$",
+  "^pi [0-9a-f]+"
 ]
 
 # Sort order for session list
