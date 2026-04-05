@@ -22,13 +22,14 @@ cd ~/dotfiles
 ```
 
 The setup script installs:
+
 - Base system dependencies (build tools, git, curl, etc.)
 - Desktop environment (Xorg, LightDM, i3)
 - Terminal emulator (Ghostty)
 - Rust toolchain and cargo tools
 - Dotfile manager (stau) and all configuration packages
 - Neovim with configuration
-- Node.js (nvm) with Claude Code CLI
+- Node.js (nvm)
 - Python tools (uv, virtualenv)
 - Kubernetes tools (kubectl, k9s)
 - And many more development tools
@@ -181,7 +182,7 @@ nvm install --lts
 nvm install node
 
 # Install Claude Code CLI and other tools
-npm install -g @anthropic-ai/claude-code opencode-ai neovim
+npm install -g neovim
 ```
 
 #### Neovim (Installed by setup.sh)

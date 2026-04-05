@@ -49,7 +49,7 @@ The setup script will:
 - Install and configure stau dotfile manager
 - Deploy all dotfiles packages
 - Install Neovim with configuration
-- Install nvm and Node.js with Claude Code CLI
+- Install nvm and Node.js
 - Set up zsh with oh-my-zsh and Powerlevel10k
 - Install additional development tools
 
@@ -151,14 +151,6 @@ Setup scripts receive these environment variables:
 - **fnox** - Secrets manager with HashiCorp Vault integration for secure credential management
 - **eza** - Modern ls replacement configuration with git integration and icons
 - **ripgrep** - Fast search tool configuration
-
-### AI & Automation
-
-- **claude** - Claude Code CLI configuration including:
-  - Custom agents for specialized tasks (architect, cloud, kubernetes, testing, documentation)
-  - Skills for common workflows (commit, review-pr, ansible, terraform, obsidian-frontmatter, etc.)
-  - Hooks for automated suggestions and workflow improvements
-- **opencode** - OpenCode AI coding assistant TUI configuration with custom keybindings
 
 ### System Tools
 
