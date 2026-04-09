@@ -7,6 +7,7 @@
 "npm:@cyclonedx/cdxgen" = "latest"
 "npm:@googleworkspace/cli" = "latest"
 "npm:agent-browser" = "latest"
+"npm:ctx7" = "latest"
 "npm:skills" = "latest"
 "pipx:black" = "latest"
 "pipx:yubikey-manager" = "latest"
