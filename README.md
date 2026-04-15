@@ -16,77 +16,26 @@ This repository contains configuration files and automated installation hooks fo
 
 ## Requirements
 
-- Linux system (Ubuntu/Debian based distributions supported)
+- Linux system
 - Git
-- curl or wget
-- sudo privileges
-
-> **Note**: The automated setup script will install all dependencies including Rust, Cargo, and stau.
+- [stau](https://github.com/mhalder/stau)
 
 ## Quick Start
 
-### Automated Installation
-
-For a complete system setup on a fresh Linux installation, use the automated setup script:
-
 ```bash
-# Clone the repository
-git clone https://github.com/mhalder/dotfiles.git ~/dotfiles
+# Clone repository
+git clone git@github.com:mhalder/dotfiles.git ~/.config/dotfiles
+cd ~/.config/dotfiles
 
-# Run the automated setup
-cd ~/dotfiles
-./setup.sh
+# Inspect available packages
+stau list
+
+# Install selected packages
+stau install fish tmux git ghostty
+stau install sway swaylock waybar mako satty lan-mouse xdg-desktop-portal autostart
 ```
 
-The setup script will:
-
-- Configure passwordless sudo (optional)
-- Install base system dependencies
-- Set up Xorg and LightDM display manager (optional)
-- Install and configure i3 window manager (optional)
-- Install Ghostty terminal emulator (optional)
-- Install Rust, Cargo, and development tools
-- Install and configure stau dotfile manager
-- Deploy all dotfiles packages
-- Install Neovim with configuration
-- Install nvm and Node.js
-- Set up zsh with oh-my-zsh and Powerlevel10k
-- Install additional development tools
-
-#### Configuration Options
-
-The setup script can be configured via environment variables:
-
-```bash
-# Disable specific components
-INSTALL_XORG_DESKTOP=false ./setup.sh
-INSTALL_I3=false ./setup.sh
-INSTALL_CHROME=false ./setup.sh
-
-# Multiple options
-INSTALL_GHOSTTY=false INSTALL_NEOVIM=false ./setup.sh
-```
-
-Available options (all default to `true`):
-
-- `ENABLE_PASSWORDLESS_SUDO` - Configure passwordless sudo
-- `INSTALL_XORG_DESKTOP` - Install Xorg and LightDM
-- `INSTALL_I3` - Install i3 window manager
-- `INSTALL_GHOSTTY` - Install Ghostty terminal
-- `SET_ZSH_DEFAULT` - Set zsh as default shell
-- `INSTALL_CASCADIA_FONTS` - Install Cascadia Code fonts
-- `INSTALL_CHROME` - Install Google Chrome
-- `INSTALL_UV` - Install uv Python package manager
-- `INSTALL_CMAKE` - Install CMake and build tools
-- `INSTALL_NVM` - Install nvm and Node.js
-- `INSTALL_NEOVIM` - Install Neovim
-- `SETUP_PYTHON_VENV` - Create Python virtualenv for Neovim
-- `INSTALL_KUBECTL` - Install kubectl
-- `CLONE_NVIM_CONFIG` - Clone Neovim configuration
-
-### Manual Installation
-
-For detailed manual installation steps, component-by-component installation, or if you prefer more control over the setup process, see the comprehensive [Installation Guide](ubuntu-installation.md).
+Install packages incrementally. Each package symlinks its files into `$HOME` and may run optional `setup.sh` / `teardown.sh` hooks.
 
 ## Structure
 
@@ -155,29 +104,17 @@ Setup scripts receive these environment variables:
 ### System Tools
 
 - **btop** - Resource monitor with customizable themes and layouts
-- **dunst** - Lightweight notification daemon configuration with custom styling
-- **i3** - Tiling window manager configuration including:
-  - Custom key bindings
-  - Workspace management with gaps
-  - i3status bar configuration
-  - Picom compositor for transparency and blur
-  - Application-specific rules
+- **mako** - Lightweight Wayland notification daemon configuration for sway sessions
+- **sway** - Wayland compositor configuration with workspace bindings, idle handling, screenshots, and app launchers
+- **swaylock** - Lock screen styling for sway sessions
+- **waybar** - Top bar modules and styling for Wayland sessions
+- **satty** - Annotated screenshot workflow for Wayland
+- **lan-mouse** - Cross-device keyboard/mouse sharing config
+- **xdg-desktop-portal** - Portal backend preferences for file pickers, screenshots, screencasts, and screen sharing on Wayland
+- **autostart** - XDG autostart entries for GUI apps launched at login
 - **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, zoxide integration, and archive previews via ouch
 - **k9s** - Kubernetes CLI tool configuration for cluster management
 - **containers** - Container registry configuration for Podman/Docker
-
-## What Gets Installed
-
-The automated setup script installs a complete development environment including:
-
-- **Base system**: Xorg, LightDM, i3 window manager
-- **Terminal**: Ghostty terminal emulator
-- **Languages**: Rust, Go, Python, Node.js (via mise)
-- **Editors**: Neovim with full configuration
-- **Tools**: Git, GitHub CLI, kubectl, cargo tools, npm packages
-- **Utilities**: Ripgrep, fd, btop, and many more
-
-For the complete list of installed tools and system dependencies, see the [Installation Guide](ubuntu-installation.md).
 
 ## Package Setup Scripts
 
@@ -194,10 +131,9 @@ Notable setup scripts:
 - **mise** - Installs all configured runtimes and CLI tools, generates fish completions
 - **fnox** - Configures Vault token and generates fish completions
 - **jj** - Generates fish completions
-- **i3** - Installs system dependencies (brightnessctl, i3lock-fancy, picom)
 - **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, and system dependencies
 
-These scripts are automatically executed by stau during package installation.
+These scripts run automatically during `stau install` and `stau uninstall`.
 
 ## Managing Packages
 
@@ -217,7 +153,7 @@ stau uninstall <package-name>   # Remove a package
 stau adopt <package-name>       # Move existing config into stau management
 ```
 
-For detailed usage instructions and advanced options, see the [Installation Guide](ubuntu-installation.md).
+Use `stau help` for advanced options.
 
 ## License
 

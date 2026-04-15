@@ -1,0 +1,16 @@
+[general]
+fullscreen = true
+early-exit = false
+corner-roundness = 8
+initial-tool = "arrow"
+copy-command = "wl-copy"
+annotation-size-factor = 1.5
+save-after-copy = true
+default-hide-toolbars = false
+focus-toggles-toolbars = false
+default-fill-shapes = false
+primary-highlighter = "block"
+disable-notifications = true
+actions-on-enter = ["save-to-clipboard", "save-to-file", "exit"]
+actions-on-escape = ["exit"]
+actions-on-right-click = ["save-to-clipboard"]

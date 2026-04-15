@@ -1,0 +1,71 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 38,
+  "spacing": 0,
+  "margin-top": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+
+  "modules-left": ["sway/workspaces"],
+  "modules-center": [],
+  "modules-right": [
+    "network",
+    "pulseaudio",
+    "backlight",
+    "battery",
+    "clock",
+    "tray"
+  ],
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": false,
+    "format": "{name}"
+  },
+
+  "network": {
+    "format-wifi": "󰖩 {ipaddr}",
+    "format-ethernet": "󰈀 {ipaddr}",
+    "format-linked": "󰈀 {ipaddr}",
+    "format-disconnected": "󰖪 down",
+    "tooltip-format": "{ifname} {ipaddr}",
+    "on-click": "ghostty -e nmtui"
+  },
+
+  "pulseaudio": {
+    "format": "󰕾 {volume}%",
+    "format-muted": "󰝟 muted",
+    "tooltip": false,
+    "on-click": "pavucontrol"
+  },
+
+  "backlight": {
+    "format": "󰃠 {percent}%",
+    "tooltip": false
+  },
+
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-full": "󰁹 {capacity}%",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "tooltip": false
+  },
+
+  "clock": {
+    "format": "󰥔 {:%H:%M}",
+    "tooltip-format": "󰃰 {:%Y-%m-%d} 󰥔 {:%H:%M}",
+    "tooltip": true
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+    "show-passive-items": true
+  }
+}

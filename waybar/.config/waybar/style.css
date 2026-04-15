@@ -1,0 +1,109 @@
+* {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+window#waybar {
+  background: #111111;
+  color: #ffffff;
+}
+
+#workspaces {
+  margin: 0;
+  padding: 0;
+}
+
+#workspaces button,
+#network,
+#pulseaudio,
+#backlight,
+#battery,
+#clock {
+  font-family: "Cascadia Code", "Cascadia Code NF", monospace;
+}
+
+#workspaces button {
+  padding: 0 10px;
+  margin: 0;
+  color: #888888;
+  background: #111111;
+}
+
+#workspaces button:hover {
+  box-shadow: none;
+  text-shadow: none;
+  background: #222222;
+  color: #ffffff;
+}
+
+#workspaces button.active {
+  background: #333333;
+  color: #ffffff;
+}
+
+#workspaces button.focused {
+  background: #145a32;
+  color: #ffffff;
+}
+
+#workspaces button.urgent {
+  background: #900000;
+  color: #ffffff;
+}
+
+#network,
+#pulseaudio,
+#backlight,
+#battery,
+#clock,
+#tray {
+  padding: 0 10px;
+  margin: 0;
+}
+
+#network {
+  color: #61afef;
+}
+
+#pulseaudio {
+  color: #c678dd;
+}
+
+#pulseaudio.muted {
+  color: #e06c75;
+}
+
+#backlight {
+  color: #e5c07b;
+}
+
+#battery {
+  color: #98c379;
+}
+
+#battery.warning {
+  color: #e5c07b;
+}
+
+#battery.critical {
+  color: #e06c75;
+}
+
+#clock {
+  color: #abb2bf;
+}
+
+#tray {
+  padding-right: 8px;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+}
