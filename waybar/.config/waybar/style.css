@@ -21,6 +21,7 @@ window#waybar {
 #pulseaudio,
 #backlight,
 #battery,
+#load,
 #clock {
   font-family: "Cascadia Code", "Cascadia Code NF", monospace;
 }
@@ -58,6 +59,7 @@ window#waybar {
 #pulseaudio,
 #backlight,
 #battery,
+#load,
 #clock,
 #tray {
   padding: 0 10px;
@@ -82,6 +84,10 @@ window#waybar {
 
 #battery {
   color: #98c379;
+}
+
+#load {
+  color: #56b6c2;
 }
 
 #battery.warning {

@@ -10,6 +10,7 @@
   "modules-left": ["sway/workspaces"],
   "modules-center": [],
   "modules-right": [
+    "load",
     "network#ethernet",
     "network#wifi",
     "pulseaudio",
@@ -66,9 +67,15 @@
     "tooltip": false
   },
 
+  "load": {
+    "format": "󰍛 {load1}",
+    "interval": 10,
+    "tooltip": false
+  },
+
   "clock": {
-    "format": "󰥔 {:%H:%M}",
-    "tooltip-format": "󰃰 {:%Y-%m-%d} 󰥔 {:%H:%M}",
+    "format": "󰃰 {:%a/%d %H:%M}",
+    "tooltip-format": "󰃰 {:%Y-%m-%d %H:%M}",
     "tooltip": true
   },
 
