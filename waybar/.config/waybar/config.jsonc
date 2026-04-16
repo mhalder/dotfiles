@@ -10,7 +10,8 @@
   "modules-left": ["sway/workspaces"],
   "modules-center": [],
   "modules-right": [
-    "network",
+    "network#ethernet",
+    "network#wifi",
     "pulseaudio",
     "backlight",
     "battery",
@@ -24,12 +25,20 @@
     "format": "{name}"
   },
 
-  "network": {
-    "format-wifi": "󰖩 {ipaddr}",
+  "network#ethernet": {
+    "interface": "en*",
     "format-ethernet": "󰈀 {ipaddr}",
     "format-linked": "󰈀 {ipaddr}",
-    "format-disconnected": "󰖪 down",
+    "format-disconnected": "",
     "tooltip-format": "{ifname} {ipaddr}",
+    "on-click": "ghostty -e nmtui"
+  },
+
+  "network#wifi": {
+    "interface": "wl*",
+    "format-wifi": "󰖩 {ipaddr}",
+    "format-disconnected": "",
+    "tooltip-format": "{ifname} {essid} {ipaddr}",
     "on-click": "ghostty -e nmtui"
   },
 
