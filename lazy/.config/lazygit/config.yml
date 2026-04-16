@@ -35,6 +35,8 @@ git:
 os:
   edit: 'LAZYGIT_LAUNCHED=1 nvim {{filename}}'
   editAtLine: 'LAZYGIT_LAUNCHED=1 nvim +{{line}} {{filename}}'
+  copyToClipboardCmd: 'setsid sh -c "printf %s {{text}} | wl-copy" >/dev/null 2>&1 < /dev/null'
+  readFromClipboardCmd: 'wl-paste'
 quitOnTopLevelReturn: true
 notARepository: quit
 keybinding:
