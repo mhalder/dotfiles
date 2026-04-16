@@ -112,7 +112,7 @@ Setup scripts receive these environment variables:
 - **lan-mouse** - Cross-device keyboard/mouse sharing config
 - **xdg-desktop-portal** - Portal backend preferences for file pickers, screenshots, screencasts, and screen sharing on Wayland
 - **autostart** - XDG autostart entries for GUI apps launched at login
-- **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, zoxide integration, and archive previews via ouch
+- **yazi** - Modern terminal file manager with vim-like keybindings, Tokyo Night theme, zoxide integration, archive previews via ouch, and Wayland clipboard support via `wl-copy`
 - **k9s** - Kubernetes CLI tool configuration for cluster management
 - **containers** - Container registry configuration for Podman/Docker
 
@@ -131,7 +131,7 @@ Notable setup scripts:
 - **mise** - Installs all configured runtimes and CLI tools, generates fish completions
 - **fnox** - Configures Vault token and generates fish completions
 - **jj** - Generates fish completions
-- **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, and system dependencies
+- **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, and system dependencies including Wayland clipboard tooling (`wl-copy`)
 
 These scripts run automatically during `stau install` and `stau uninstall`.
 
