@@ -169,8 +169,8 @@ input "type:keyboard" {
 }
 
 # keyboard layout shortcuts
-bindsym $mod+Shift+i input type:keyboard xkb_switch_layout 0
-bindsym $mod+Shift+u input type:keyboard xkb_switch_layout 1
+bindsym $mod+Shift+i input type:keyboard xkb_switch_layout 1
+bindsym $mod+Shift+u input type:keyboard xkb_switch_layout 0
 bindsym $mod+Shift+s exec sh -lc 'grim -g "$(slurp)" - | wl-copy'
 bindsym $mod+Shift+a exec sh -lc 'mkdir -p ~/Pictures/screenshots && grim -g "$(slurp)" -t ppm - | ~/.cargo/bin/satty --filename - --output-filename ~/Pictures/screenshots/satty-$(date +"%Y-%m-%d_%H-%M-%S").png'
 bindsym $mod+Shift+g exec --no-startup-id /opt/enpass/Enpass showassistant

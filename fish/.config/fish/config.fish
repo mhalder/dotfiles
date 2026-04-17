@@ -22,6 +22,13 @@ if status is-interactive
     abbr -a ss 'cd ../..'
     bind \ee edit_command_buffer  # Alt+e to edit in nvim
 
+    function __fzf_search_home --description 'Run fzf picker rooted at home directory'
+        commandline --current-token --replace "~/"
+        _fzf_search_directory
+    end
+    bind ctrl-t __fzf_search_home
+    bind -M insert ctrl-t __fzf_search_home
+
     # eza
     abbr -a l eza
     abbr -a ls eza
