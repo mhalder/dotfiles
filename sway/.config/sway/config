@@ -191,3 +191,5 @@ client.background       #ffffff
 # Only enable outer gaps when there is exactly one window or split container on the workspace.
 smart_gaps inverse_outer
 
+# Auto-switch display profiles
+exec_always kanshi

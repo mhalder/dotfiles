@@ -32,7 +32,7 @@ stau list
 
 # Install selected packages
 stau install fish tmux git ghostty
-stau install sway swaylock waybar mako satty lan-mouse xdg-desktop-portal autostart
+stau install sway swaylock waybar mako kanshi satty lan-mouse xdg-desktop-portal autostart
 ```
 
 Install packages incrementally. Each package symlinks its files into `$HOME` and may run optional `setup.sh` / `teardown.sh` hooks.
@@ -105,6 +105,7 @@ Setup scripts receive these environment variables:
 
 - **btop** - Resource monitor with customizable themes and layouts
 - **mako** - Lightweight Wayland notification daemon configuration for sway sessions
+- **kanshi** - Dynamic display profile management for sway/wlroots outputs
 - **sway** - Wayland compositor configuration with workspace bindings, idle handling, screenshots, and app launchers
 - **swaylock** - Lock screen styling for sway sessions
 - **waybar** - Top bar modules and styling for Wayland sessions
