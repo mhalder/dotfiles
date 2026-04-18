@@ -57,14 +57,14 @@ if status is-interactive
     abbr -a kk k9s
     abbr -a kn kubens
 
-    # Zoxide
-    zoxide init fish | source
-
     # Mise - runtime version manager
     mise activate fish | source
     if not test -f ~/.config/fish/completions/mise.fish
         mise completion fish > ~/.config/fish/completions/mise.fish
     end
+
+    # Zoxide
+    zoxide init fish | source
 
     # vault
     abbr -a vr vault-renew
