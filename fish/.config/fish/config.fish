@@ -18,6 +18,8 @@ if status is-interactive
     abbr -a e exit
     abbr -a v nvim
     abbr -a t tmux
+    abbr -a tl 'tmux ls'
+    abbr -a ta 'tmux attach'
     abbr -a c clear
     abbr -a s 'cd ..'
     abbr -a ss 'cd ../..'
