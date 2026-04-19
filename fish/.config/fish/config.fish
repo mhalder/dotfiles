@@ -17,7 +17,7 @@ fish_add_path ~/go/bin
 if status is-interactive
     abbr -a e exit
     abbr -a v nvim
-    abbr -a t tmux
+    abbr -a t 'tmux new -A -s main'
     abbr -a tl 'tmux ls'
     abbr -a ta 'tmux attach'
     abbr -a c clear
@@ -78,11 +78,6 @@ if status is-interactive
     end
     fnox activate fish | source
 
-    # Start sesh session picker if not already in tmux
-    if not set -q TMUX
-        set -l session (sesh list | fzf --height 40% --reverse --border)
-        and sesh connect $session
-    end
 else
     # Non-interactive shells use shims for tool access
     mise activate fish --shims | source
