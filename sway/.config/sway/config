@@ -7,7 +7,6 @@ font pango:Cascadia Code, Regular 12
 
 # set background
 output * bg ~/.background.png fill
-output DP-6 scale 1.5
 
 # sway session env
 exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway
@@ -193,4 +192,4 @@ client.background       #ffffff
 smart_gaps inverse_outer
 
 # Auto-switch display profiles
-exec_always kanshi
+exec --no-startup-id kanshi
