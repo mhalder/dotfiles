@@ -27,8 +27,9 @@ floating_modifier $mod
 bindsym $mod+Return exec ghostty
 
 # borders
-default_border none
-default_floating_border none
+# keep visible border so active window stands out
+default_border pixel 1
+default_floating_border pixel 1
 
 # kill focused window
 bindsym $mod+Shift+w kill
