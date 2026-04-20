@@ -128,7 +128,7 @@ Notable setup scripts:
 
 - **fish** - Installs fzf binary, Fisher plugin manager, and syncs fish plugins
 - **tmux** - Installs Tmux Plugin Manager (TPM) and plugins
-- **sesh** - Installs sesh binary via go install
+- **sesh** - Verifies sesh is available (managed via mise)
 - **mise** - Installs all configured runtimes and CLI tools, generates fish completions
 - **fnox** - Configures Vault token and generates fish completions
 - **jj** - Generates fish completions

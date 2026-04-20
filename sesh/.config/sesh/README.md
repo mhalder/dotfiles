@@ -5,7 +5,8 @@ A smart tmux session manager with zoxide integration.
 ## Installation
 
 ```bash
-go install github.com/joshmedeski/sesh/v2@latest
+mise use -g go:github.com/joshmedeski/sesh/v2@latest
+mise install
 ```
 
 ## Configuration

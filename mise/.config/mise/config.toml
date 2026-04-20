@@ -1,10 +1,12 @@
 [tools]
 "aqua:tailscale/tailscale" = "latest"
+"cargo:lan-mouse" = "latest"
 "cargo:stau" = "latest"
 "github:itaysk/kubectl-neat" = "latest"
 "github:ramonvermeulen/whosthere" = "latest"
 "github:sinclairtarget/git-who" = "latest"
 "github:vmware/govmomi" = "latest"
+"go:github.com/joshmedeski/sesh/v2" = "latest"
 "npm:@cyclonedx/cdxgen" = "latest"
 "npm:@googleworkspace/cli" = "latest"
 "npm:agent-browser" = "latest"
