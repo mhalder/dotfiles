@@ -17,7 +17,7 @@ fish_add_path ~/go/bin
 if status is-interactive
     abbr -a e exit
     abbr -a v nvim
-    abbr -a t 'tmux new -A -s main'
+    abbr -a t 'tmux new -A -s main "nvim main.md"'
     abbr -a tl 'tmux ls'
     abbr -a ta 'tmux attach'
     abbr -a c clear
