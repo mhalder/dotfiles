@@ -24,6 +24,7 @@ image_quality = 75
 
 [plugin]
 prepend_previewers = [
+	{ mime = "application/pdf", run = "noop" },
 	{ url = "*.tar", run = "ouch" },
 	{ url = "*.tar.*", run = "ouch" },
 	{ url = "*.tgz", run = "ouch" },
