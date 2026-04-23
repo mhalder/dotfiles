@@ -1,4 +1,9 @@
--- Enable zoxide database updates when changing directories in yazi
-require("zoxide"):setup({
-	update_db = true,
-})
+-- ~/.config/yazi/init.lua
+-- Keep zoxide db in sync when moving in Yazi
+
+local ok, zoxide = pcall(require, "zoxide")
+if ok then
+	zoxide:setup({
+		update_db = true,
+	})
+end

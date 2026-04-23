@@ -1,3 +1,5 @@
+# ~/.config/yazi/theme.toml
+
 [flavor]
 dark = "tokyo-night"
 light = "tokyo-night"

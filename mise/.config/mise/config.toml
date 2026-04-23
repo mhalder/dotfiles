@@ -1,6 +1,7 @@
 [tools]
 "aqua:tailscale/tailscale" = "latest"
 "cargo:lan-mouse" = "latest"
+"cargo:ouch" = "latest"
 "cargo:stau" = "latest"
 "github:itaysk/kubectl-neat" = "latest"
 "github:ramonvermeulen/whosthere" = "latest"

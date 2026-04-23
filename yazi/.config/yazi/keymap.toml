@@ -1,26 +1,35 @@
 # ~/.config/yazi/keymap.toml
-# Only custom keybindings - defaults are inherited automatically
+# Wayland/Sway custom bindings. Defaults remain active.
 
-# Dotfiles shortcut
 [[mgr.prepend_keymap]]
-on   = ["g", "."]
-run  = "cd ~/.config/dotfiles"
+on = ["g", "."]
+run = "cd ~/.config/dotfiles"
 desc = "Go to dotfiles"
 
-# Open shell here
 [[mgr.prepend_keymap]]
-on   = "!"
-run  = 'shell "$SHELL" --block'
-desc = "Open shell here"
-
-# Git root navigation
-[[mgr.prepend_keymap]]
-on   = ["g", "r"]
-run  = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
+on = ["g", "r"]
+run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"'
 desc = "Go to git root"
 
-# Copy file path to clipboard (Wayland) - with ~ for home
 [[mgr.prepend_keymap]]
-on   = "Y"
-run  = 'shell -- echo "$@" | sed "s|$HOME|~|g" | tr " " "\n" | wl-copy'
-desc = "Copy path to clipboard"
+on = "!"
+run = 'shell "$SHELL" --block'
+desc = "Open shell here"
+
+[[mgr.prepend_keymap]]
+on = "y"
+run = [
+  'shell -- for path in %s; do echo "file://$path"; done | wl-copy -t text/uri-list',
+  "yank"
+]
+desc = "Yank + copy file URIs to Wayland clipboard"
+
+[[mgr.prepend_keymap]]
+on = "Y"
+run = 'shell -- for path in %s; do echo "$path"; done | sed "s|^$HOME|~|" | wl-copy'
+desc = "Copy selected paths to Wayland clipboard"
+
+[[mgr.prepend_keymap]]
+on = ["g", "s"]
+run = "cd ~/.config/sway"
+desc = "Go to sway config"
