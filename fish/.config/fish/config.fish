@@ -1,7 +1,6 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
-set -gx MISE_GITHUB_TOKEN (gh auth token 2>/dev/null)
 set -gx VAULT_ADDR "https://vault.lan.halder.me"
 set -gx VAULT_NAMESPACE ""
 set -gx ZEPHYR_SDK_INSTALL_DIR ~/tools/zephyr-sdk-0.17.0
@@ -61,6 +60,12 @@ if status is-interactive
 
     # Mise - runtime version manager
     mise activate fish | source
+    if type -q gh
+        set -gx MISE_GITHUB_TOKEN (gh auth token 2>/dev/null)
+    end
+    if type -q glab
+        set -gx MISE_GITLAB_TOKEN (glab config get token --host gitlab.com 2>/dev/null)
+    end
     if not test -f ~/.config/fish/completions/mise.fish
         mise completion fish > ~/.config/fish/completions/mise.fish
     end
@@ -81,6 +86,12 @@ if status is-interactive
 else
     # Non-interactive shells use shims for tool access
     mise activate fish --shims | source
+    if type -q gh
+        set -gx MISE_GITHUB_TOKEN (gh auth token 2>/dev/null)
+    end
+    if type -q glab
+        set -gx MISE_GITLAB_TOKEN (glab config get token --host gitlab.com 2>/dev/null)
+    end
     if test -f ~/.vault-token
         set -gx VAULT_TOKEN (cat ~/.vault-token)
     end
