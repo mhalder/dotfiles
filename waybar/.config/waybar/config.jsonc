@@ -13,9 +13,10 @@
     "load",
     "network#ethernet",
     "network#wifi",
-    "pulseaudio",
-    "backlight",
+    "disk",
+    "memory",
     "battery",
+    "custom/kblayout",
     "clock",
     "tray"
   ],
@@ -67,9 +68,29 @@
     "tooltip": false
   },
 
+  "disk": {
+    "path": "/",
+    "interval": 30,
+    "format": "󰋊 {percentage_used}%",
+    "tooltip-format": "{used} used / {total} total on {path}"
+  },
+
   "load": {
     "format": "󰍛 {load1}",
     "interval": 10,
+    "tooltip": false
+  },
+
+  "memory": {
+    "interval": 30,
+    "format": "󰘚 {}%",
+    "tooltip-format": "{used:0.1f}G / {total:0.1f}G used"
+  },
+
+  "custom/kblayout": {
+    "exec": "~/.config/waybar/scripts/kblayout.sh",
+    "interval": 2,
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
     "tooltip": false
   },
 

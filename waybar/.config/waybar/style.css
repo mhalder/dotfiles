@@ -20,8 +20,11 @@ window#waybar {
 #network,
 #pulseaudio,
 #backlight,
+#disk,
 #battery,
 #load,
+#memory,
+#custom-kblayout,
 #clock {
   font-family: "Cascadia Code", "Cascadia Code NF", monospace;
 }
@@ -58,8 +61,11 @@ window#waybar {
 #network,
 #pulseaudio,
 #backlight,
+#disk,
 #battery,
 #load,
+#memory,
+#custom-kblayout,
 #clock,
 #tray {
   padding: 0 10px;
@@ -82,12 +88,24 @@ window#waybar {
   color: #e5c07b;
 }
 
+#disk {
+  color: #d19a66;
+}
+
 #battery {
   color: #98c379;
 }
 
 #load {
   color: #56b6c2;
+}
+
+#memory {
+  color: #8fbcbb;
+}
+
+#custom-kblayout {
+  color: #b48ead;
 }
 
 #battery.warning {

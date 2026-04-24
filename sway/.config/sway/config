@@ -169,8 +169,8 @@ input "type:keyboard" {
 }
 
 # keyboard layout shortcuts
-bindsym $mod+Shift+i input type:keyboard xkb_switch_layout 1
-bindsym $mod+Shift+u input type:keyboard xkb_switch_layout 0
+bindsym --to-code $mod+Shift+i exec swaymsg 'input type:keyboard xkb_switch_layout 1'
+bindsym --to-code $mod+Shift+u exec swaymsg 'input type:keyboard xkb_switch_layout 0'
 bindsym $mod+Shift+s exec sh -lc 'grim -g "$(slurp)" - | wl-copy'
 bindsym $mod+Shift+a exec sh -lc 'mkdir -p ~/Pictures/screenshots && grim -g "$(slurp)" -t ppm - | ~/.cargo/bin/satty --filename - --output-filename ~/Pictures/screenshots/satty-$(date +"%Y-%m-%d_%H-%M-%S").png'
 bindsym $mod+Shift+g exec --no-startup-id sh -c 'if [ -x /opt/enpass/Enpass ]; then exec /opt/enpass/Enpass showassistant; else exec swaynag -t warning -m "Enpass not installed"; fi'
@@ -192,4 +192,4 @@ client.background       #ffffff
 smart_gaps inverse_outer
 
 # Auto-switch display profiles
-exec --no-startup-id kanshi
+exec_always --no-startup-id sh -c 'pkill -x kanshi || true; exec kanshi'
