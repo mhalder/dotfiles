@@ -4,6 +4,7 @@
 "cargo:ouch" = "latest"
 "cargo:satty" = "latest"
 "cargo:stau" = "latest"
+"cargo:tree-sitter-cli" = "latest"
 "github:itaysk/kubectl-neat" = "latest"
 "github:ramonvermeulen/whosthere" = "latest"
 "github:sinclairtarget/git-who" = "latest"
