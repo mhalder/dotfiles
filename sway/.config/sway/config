@@ -6,7 +6,7 @@
 font pango:Cascadia Code, Regular 12
 
 # set background
-output * bg ~/.background.png fill
+output * bg ~/.background.png fill #111111
 
 # sway session env
 exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_DESKTOP=sway
@@ -173,7 +173,7 @@ bindsym $mod+Shift+i input type:keyboard xkb_switch_layout 1
 bindsym $mod+Shift+u input type:keyboard xkb_switch_layout 0
 bindsym $mod+Shift+s exec sh -lc 'grim -g "$(slurp)" - | wl-copy'
 bindsym $mod+Shift+a exec sh -lc 'mkdir -p ~/Pictures/screenshots && grim -g "$(slurp)" -t ppm - | ~/.cargo/bin/satty --filename - --output-filename ~/Pictures/screenshots/satty-$(date +"%Y-%m-%d_%H-%M-%S").png'
-bindsym $mod+Shift+g exec --no-startup-id /opt/enpass/Enpass showassistant
+bindsym $mod+Shift+g exec --no-startup-id sh -c 'if [ -x /opt/enpass/Enpass ]; then exec /opt/enpass/Enpass showassistant; else exec swaynag -t warning -m "Enpass not installed"; fi'
 
 # configure gaps
 gaps inner 8
