@@ -3,6 +3,11 @@ set -euo pipefail
 
 log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
+if ! command -v tmux &>/dev/null; then
+  log "Error: tmux is not installed"
+  exit 1
+fi
+
 log "Setting up tmux plugins directory..."
 mkdir -p ~/.config/tmux/plugins
 

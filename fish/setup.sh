@@ -5,6 +5,11 @@ log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
 
 FISHER_PATH="${XDG_DATA_HOME:-$HOME/.local/share}/fish/vendor_functions.d/fisher.fish"
 
+if ! command -v fish &>/dev/null; then
+  log "Error: fish is not installed"
+  exit 1
+fi
+
 # Install fzf binary (required by fzf.fish plugin)
 log "Setting up fzf..."
 if [ -d ~/.fzf ]; then
