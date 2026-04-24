@@ -107,6 +107,7 @@ Setup scripts receive these environment variables:
 - **mako** - Lightweight Wayland notification daemon configuration for sway sessions
 - **kanshi** - Dynamic display profile management for sway/wlroots outputs
 - **sway** - Wayland compositor configuration with workspace bindings, idle handling, screenshots, and app launchers
+- **wofi** - Wayland app launcher/picker configuration with combined `drun` and `dmenu` modes
 - **swaylock** - Lock screen styling for sway sessions
 - **waybar** - Top bar modules and styling for Wayland sessions
 - **satty** - Annotated screenshot workflow for Wayland
@@ -133,6 +134,7 @@ Notable setup scripts:
 - **fnox** - Configures Vault token and generates fish completions
 - **jj** - Generates fish completions
 - **yazi** - Installs yazi plugins (zoxide, ouch), Tokyo Night flavor, system dependencies (`wl-copy`, `mpv`, `7zz`), and uses mise for rust tools (`cargo:ouch`, `zoxide`)
+- **wofi** - Verifies `wofi` is installed and cleans up Wofi cache files during teardown
 
 These scripts run automatically during `stau install` and `stau uninstall`.
 

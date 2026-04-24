@@ -1,0 +1,17 @@
+width=42%
+height=52%
+location=top
+yoffset=48
+lines=10
+columns=1
+prompt=
+matching=fuzzy
+insensitive=true
+hide_scroll=true
+gtk_dark=true
+sort_order=alphabetical
+parse_search=true
+no_actions=true
+
+# dmenu mode niceties
+dmenu-parse_action=true

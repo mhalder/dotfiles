@@ -34,7 +34,7 @@ default_floating_border pixel 1
 bindsym $mod+Shift+w kill
 
 # start dmenu (a program launcher)
-bindsym $mod+z exec wofi --show drun
+bindsym $mod+z exec wofi --show drun,dmenu
 
 # change focus
 bindsym $mod+h focus left
