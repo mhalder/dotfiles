@@ -29,7 +29,14 @@ if [ -f "$FISHER_PATH" ]; then
   fish -c "fisher update" || log "Warning: Failed to update"
 else
   log "Installing fisher and plugins from fish_plugins..."
-  fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update' || exit 1
+  if command -v curl &>/dev/null; then
+    fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update' || exit 1
+  elif command -v wget &>/dev/null; then
+    fish -c 'wget -qO- https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher update' || exit 1
+  else
+    log "Error: curl or wget is required to install fisher"
+    exit 1
+  fi
 fi
 
 log "fish setup completed!"
