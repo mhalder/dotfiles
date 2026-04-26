@@ -2,5 +2,5 @@ default_provider = "vault"
 
 [providers.vault]
 type = "vault"
-address = "https://vault.lan.halder.me"
+address = "https://vault.mesh.halder.io"
 path = "secret"

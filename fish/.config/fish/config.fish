@@ -1,7 +1,7 @@
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 set -gx RIPGREP_CONFIG_PATH ~/.ripgreprc
-set -gx VAULT_ADDR "https://vault.lan.halder.me"
+set -gx VAULT_ADDR "https://vault.mesh.halder.io"
 set -gx VAULT_NAMESPACE ""
 set -gx ZEPHYR_SDK_INSTALL_DIR ~/tools/zephyr-sdk-0.17.0
 set -g fish_greeting

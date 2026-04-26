@@ -15,6 +15,7 @@
 "npm:ctx7" = "latest"
 "npm:skills" = "latest"
 "pipx:ansible-core" = "latest"
+"pipx:ansible-lint" = "latest"
 "pipx:black" = "latest"
 "pipx:yubikey-manager" = "latest"
 age = "latest"
